@@ -75,59 +75,83 @@
 <body class="min-h-screen flex flex-col">
 
   <!-- Header Sticky -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="bg-blue-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">AI/ML Test Bank</span>
-          <h1 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Ứng Dụng Ôn Tập AI/ML Chuẩn Hóa (68 Câu Độc Nhất)</h1>
-        </div>
-        <p class="text-xs text-slate-500 mt-0.5">47 Trắc nghiệm đơn • 5 Nhiều đáp án • 16 Tự luận & Tình huống lớn • 100% Lời giải chuyên sâu</p>
+    <!-- Header Có Khả Năng Thu Gọn / Mở Rộng Thông Minh (Tối ưu cực đỉnh cho điện thoại) -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <!-- Thanh Mini Bar Luôn Hiển Thị (Rất gọn, chỉ 42px) -->
+    <div class="max-w-6xl mx-auto px-3.5 py-2 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 overflow-hidden cursor-pointer" onclick="toggleTopBoard()">
+        <span class="bg-blue-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0">AI/ML</span>
+        <h1 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">Ôn Tập AI/ML (68 Câu Độc Nhất)</h1>
       </div>
 
-      <!-- Mode Selector & Stats -->
-      <div class="flex flex-wrap items-center gap-2.5">
-        <!-- Chuyển đổi chế độ -->
-        <div class="bg-slate-100 p-1 rounded-xl flex items-center text-xs font-semibold">
-          <button id="modeQuizBtn" onclick="setMode('quiz')" class="px-3 py-1.5 rounded-lg bg-white shadow-sm text-blue-600 font-bold transition">🎯 Luyện Thi</button>
-          <button id="modeStudyBtn" onclick="setMode('study')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">📖 Học Đầy Đủ</button>
-          <button id="modeSpeedBtn" onclick="setMode('speed_70')" class="px-3 py-1.5 rounded-lg text-amber-700 hover:text-amber-900 font-bold transition flex items-center gap-1">⚡ Ôn Siêu Tốc (>70%)</button>
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Tóm tắt điểm số mini trên mobile -->
+        <div class="text-[11px] font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-slate-200">
+          <span class="text-emerald-600 font-bold" id="miniScoreCorrect">0 Đúng</span>
+          <span class="text-slate-300">•</span>
+          <span class="text-rose-600 font-bold" id="miniScoreWrong">0 Sai</span>
+          <span class="text-slate-300">•</span>
+          <span class="text-blue-600 font-bold" id="miniProgress">0%</span>
         </div>
-        <button onclick="openFullAudioModal()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition shadow-sm flex items-center gap-1.5">🎧 Nghe Toàn Bộ 16 Câu</button>
-        <button id="cheatSheetBtn" onclick="openCheatSheet()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold transition shadow-sm flex items-center gap-1.5">📖 Sổ Tay & Bí Kíp >70%</button>
-      </div>
 
-      <!-- Bộ đếm điểm thời gian thực -->
-        <div class="bg-blue-50/80 border border-blue-200 px-3 py-1.5 rounded-xl flex items-center gap-3 text-xs">
+        <!-- Nút Thu Gọn / Mở Rộng Bảng Điều Khiển -->
+        <button id="toggleTopBoardBtn" onclick="toggleTopBoard()" class="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 active:bg-blue-200 text-blue-700 border border-blue-300 text-xs font-extrabold transition flex items-center gap-1 shadow-xs cursor-pointer" title="Thu gọn hoặc mở rộng bảng điều khiển">
+          <span id="toggleTopBoardText">Thu gọn bảng</span>
+          <span id="toggleTopBoardIcon" class="text-[10px]">▲</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Khối Bảng Điều Khiển & Bộ Lọc Toàn Diện (Có thể thu gọn lên để đọc câu hỏi trọn vẹn) -->
+    <div id="topBoardContent" class="transition-all duration-200 border-t border-slate-100 bg-slate-50/50">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+        <div>
+          <p class="text-xs text-slate-500">47 Trắc nghiệm đơn • 5 Nhiều đáp án • 16 Tự luận & Tình huống lớn • 100% Lời giải chuyên sâu</p>
+        </div>
+
+        <!-- Mode Selector & Stats -->
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Chuyển đổi chế độ -->
+          <div class="bg-slate-200/80 p-1 rounded-xl flex items-center text-xs font-semibold">
+            <button id="modeQuizBtn" onclick="setMode('quiz')" class="px-3 py-1.5 rounded-lg bg-white shadow-sm text-blue-600 font-bold transition cursor-pointer">🎯 Luyện Thi</button>
+            <button id="modeStudyBtn" onclick="setMode('study')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer">📖 Học Đầy Đủ</button>
+            <button id="modeSpeedBtn" onclick="setMode('speed_70')" class="px-3 py-1.5 rounded-lg text-amber-700 hover:text-amber-900 font-bold transition flex items-center gap-1 cursor-pointer">⚡ Ôn Siêu Tốc (>70%)</button>
+          </div>
+          <button onclick="openFullAudioModal()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">🎧 Nghe Toàn Bộ 16 Câu</button>
+          <button id="cheatSheetBtn" onclick="openCheatSheet()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">📖 Sổ Tay & Bí Kíp >70%</button>
+        </div>
+
+        <!-- Bộ đếm điểm chi tiết -->
+        <div class="bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-xl flex items-center gap-3 text-xs">
           <div><span class="text-slate-500 font-medium">Đúng:</span> <strong id="scoreCorrect" class="text-emerald-600 font-bold text-sm">0</strong></div>
           <div><span class="text-slate-500 font-medium">Sai:</span> <strong id="scoreWrong" class="text-rose-600 font-bold text-sm">0</strong></div>
           <div><span class="text-slate-500 font-medium">Tiến độ:</span> <strong id="progressPercent" class="text-blue-600 font-bold text-sm">0%</strong></div>
         </div>
       </div>
-    </div>
 
-    <!-- Filters & Search Bar -->
-    <div class="bg-slate-50 border-t border-slate-200 px-4 py-2.5">
-      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-        <!-- 7 Nút Bộ Lọc Chuẩn Hóa -->
-        <div class="flex flex-wrap items-center gap-1.5 text-xs font-medium w-full md:w-auto">
-          <button onclick="setFilter('all')" id="filter-all" class="filter-btn active px-3 py-1.5 rounded-full bg-blue-600 text-white font-semibold transition" data-filter="all">Tất cả (68)</button>
-          <button onclick="setFilter('single')" id="filter-single" class="filter-btn px-3 py-1.5 rounded-full bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition" data-filter="single">Trắc nghiệm đơn (47)</button>
-          <button onclick="setFilter('multi')" id="filter-multi" class="filter-btn px-3 py-1.5 rounded-full bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition" data-filter="multi">Nhiều đáp án (5)</button>
-          <button onclick="setFilter('essay')" id="filter-essay" class="filter-btn px-3 py-1.5 rounded-full bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition" data-filter="essay">Tự luận & Tình huống (16)</button>
-          
-          <span class="text-slate-300 hidden sm:inline">|</span>
-          
-          <!-- Chuyên đề 3 Tracks -->
-          <button onclick="setFilter('track1')" id="filter-track1" class="filter-btn px-3 py-1.5 rounded-full bg-blue-50 border border-blue-300 text-blue-800 hover:bg-blue-100 font-semibold transition" data-filter="track1">🤖 Track 1: Applications (25)</button>
-          <button onclick="setFilter('track2')" id="filter-track2" class="filter-btn px-3 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-amber-800 hover:bg-amber-100 font-semibold transition" data-filter="track2">🛠️ Track 2: Infrastructure (34)</button>
-          <button onclick="setFilter('track3')" id="filter-track3" class="filter-btn px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-800 hover:bg-emerald-100 font-semibold transition" data-filter="track3">📈 Track 3: Product (22)</button>
-        </div>
+      <!-- Filters & Search Bar -->
+      <div class="bg-slate-100/70 border-t border-slate-200/80 px-4 py-2.5">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+          <!-- 7 Nút Bộ Lọc Chuẩn Hóa -->
+          <div class="flex flex-wrap items-center gap-1.5 text-xs font-medium w-full md:w-auto">
+            <button onclick="setFilter('all')" id="filter-all" class="filter-btn active px-3 py-1.5 rounded-full bg-blue-600 text-white font-semibold transition cursor-pointer" data-filter="all">Tất cả (68)</button>
+            <button onclick="setFilter('single')" id="filter-single" class="filter-btn px-3 py-1.5 rounded-full bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition cursor-pointer" data-filter="single">Trắc nghiệm đơn (47)</button>
+            <button onclick="setFilter('multi')" id="filter-multi" class="filter-btn px-3 py-1.5 rounded-full bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition cursor-pointer" data-filter="multi">Nhiều đáp án (5)</button>
+            <button onclick="setFilter('essay')" id="filter-essay" class="filter-btn px-3 py-1.5 rounded-full bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition cursor-pointer" data-filter="essay">Tự luận & Tình huống (16)</button>
+            
+            <span class="text-slate-300 hidden sm:inline">|</span>
+            
+            <!-- Chuyên đề 3 Tracks -->
+            <button onclick="setFilter('track1')" id="filter-track1" class="filter-btn px-3 py-1.5 rounded-full bg-blue-50 border border-blue-300 text-blue-800 hover:bg-blue-100 font-semibold transition cursor-pointer" data-filter="track1">🤖 Track 1: Applications (25)</button>
+            <button onclick="setFilter('track2')" id="filter-track2" class="filter-btn px-3 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-amber-800 hover:bg-amber-100 font-semibold transition cursor-pointer" data-filter="track2">🛠️ Track 2: Infrastructure (34)</button>
+            <button onclick="setFilter('track3')" id="filter-track3" class="filter-btn px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-800 hover:bg-emerald-100 font-semibold transition cursor-pointer" data-filter="track3">📈 Track 3: Product (22)</button>
+          </div>
 
-        <!-- Ô Tìm Kiếm Real-time -->
-        <div class="relative w-full md:w-72 flex-shrink-0">
-          <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Tìm kiếm (ReAct, ROI, RAGAS, P99...)" class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm">
-          <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <!-- Ô Tìm Kiếm Real-time -->
+          <div class="relative w-full md:w-72 flex-shrink-0">
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Tìm kiếm (ReAct, ROI, RAGAS, P99...)" class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-xs">
+            <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
         </div>
       </div>
     </div>
@@ -244,6 +268,15 @@
       updateStats();
       updateBookmarkUI();
       renderQuestions();
+
+      // Kiểm tra nếu trên điện thoại hoặc người dùng đã thu gọn bảng trước đó
+      const isMobile = window.innerWidth < 768;
+      const savedCollapsed = localStorage.getItem('ai_top_board_collapsed');
+      if (savedCollapsed === 'true') {
+        toggleTopBoard(false); // Thu gọn
+      } else if (savedCollapsed === null && isMobile) {
+        // Trên điện thoại lần đầu: để mở nhưng người dùng có nút thu gọn cực kỳ to rõ ràng
+      }
     }
 
     function setMode(mode) {
@@ -573,6 +606,10 @@
                     ${hasDrawing ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>' : ''}
                   </button>
                 </div>
+                <!-- Nút Thu gọn / Mở rộng bàn nháp -->
+                <button type="button" id="draft-toggle-btn-${q.id}" onclick="toggleDraftBox(${q.id})" class="px-2 py-1 rounded-md text-[11px] font-bold text-slate-600 hover:text-slate-900 bg-slate-200/60 hover:bg-slate-200 transition cursor-pointer">
+                  Thu gọn nháp ▲
+                </button>
               </div>
               <button id="essay-btn-${q.id}" onclick="toggleEssayAnswer(${q.id})" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer">
                 ${isRevealed ? '🙈 Ẩn lời giải' : '👁️ Xem lời giải & Barem'}
@@ -842,9 +879,19 @@
       const wrongCount = answeredList.filter(a => a.isCorrect === false).length;
       const progress = Math.round((answeredList.length / questions.length) * 100);
 
-      document.getElementById('scoreCorrect').innerText = correctCount;
-      document.getElementById('scoreWrong').innerText = wrongCount;
-      document.getElementById('progressPercent').innerText = progress + '%';
+      const scEl = document.getElementById('scoreCorrect');
+      const swEl = document.getElementById('scoreWrong');
+      const ppEl = document.getElementById('progressPercent');
+      if (scEl) scEl.innerText = correctCount;
+      if (swEl) swEl.innerText = wrongCount;
+      if (ppEl) ppEl.innerText = progress + '%';
+
+      const miniC = document.getElementById('miniScoreCorrect');
+      const miniW = document.getElementById('miniScoreWrong');
+      const miniP = document.getElementById('miniProgress');
+      if (miniC) miniC.innerText = correctCount + ' Đúng';
+      if (miniW) miniW.innerText = wrongCount + ' Sai';
+      if (miniP) miniP.innerText = progress + '%';
       
       const summaryElem = document.getElementById('statsSummaryText');
       if (answeredList.length === 0) {
@@ -1026,6 +1073,50 @@
         btn.classList.remove('opacity-100', 'translate-y-0');
       }
     });
+
+    
+    // ==========================================
+    // LOGIC THU GỌN / MỞ RỘNG BẢNG ĐIỀU KHIỂN ĐẦU TRANG
+    // ==========================================
+    function toggleTopBoard(forceState) {
+      const content = document.getElementById('topBoardContent');
+      const btnText = document.getElementById('toggleTopBoardText');
+      const btnIcon = document.getElementById('toggleTopBoardIcon');
+      if (!content) return;
+
+      const isHidden = forceState !== undefined ? !forceState : !content.classList.contains('hidden');
+      if (isHidden) {
+        content.classList.add('hidden');
+        if (btnText) btnText.innerText = 'Mở bộ lọc & Menu';
+        if (btnIcon) btnIcon.innerText = '▼';
+        localStorage.setItem('ai_top_board_collapsed', 'true');
+      } else {
+        content.classList.remove('hidden');
+        if (btnText) btnText.innerText = 'Thu gọn bảng';
+        if (btnIcon) btnIcon.innerText = '▲';
+        localStorage.setItem('ai_top_board_collapsed', 'false');
+      }
+    }
+
+    
+    function toggleDraftBox(qid) {
+      const textCont = document.getElementById(`draft-text-container-${qid}`);
+      const drawCont = document.getElementById(`draft-draw-container-${qid}`);
+      const btn = document.getElementById(`draft-toggle-btn-${qid}`);
+      if (!btn) return;
+
+      const isCollapsed = btn.dataset.collapsed === 'true';
+      if (isCollapsed) {
+        if (textCont) textCont.classList.remove('hidden');
+        btn.dataset.collapsed = 'false';
+        btn.innerText = 'Thu gọn nháp ▲';
+      } else {
+        if (textCont) textCont.classList.add('hidden');
+        if (drawCont) drawCont.classList.add('hidden');
+        btn.dataset.collapsed = 'true';
+        btn.innerText = 'Mở nháp ▼';
+      }
+    }
 
     window.onload = init;
   </script>
