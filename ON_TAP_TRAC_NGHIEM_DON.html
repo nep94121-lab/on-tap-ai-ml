@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>On Tap Trac Nghiem Don - AI & ML</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #1a1a2e;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      background: #f0f9ff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 2px solid #3b82f6;
+    }
+
+    .stat-item span {
+      font-weight: 700;
+      color: #3b82f6;
+    }
+
+    .question-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .question-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .question-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .question-number {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .question-text {
+      flex: 1;
+      font-size: 1.05rem;
+      color: #1a1a2e;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .choice {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fafafa;
+    }
+
+    .choice:hover {
+      border-color: #3b82f6;
+      background: #f0f9ff;
+    }
+
+    .choice.selected {
+      border-color: #3b82f6;
+      background: #dbeafe;
+    }
+
+    .choice.correct {
+      border-color: #22c55e;
+      background: #dcfce7;
+    }
+
+    .choice.wrong {
+      border-color: #ef4444;
+      background: #fee2e2;
+    }
+
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .choice.correct .choice-letter {
+      background: #22c55e;
+      color: white;
+    }
+
+    .choice.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+
+    .choice-text {
+      flex: 1;
+      font-size: 0.95rem;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    .btn-explain {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn-explain:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-explain.active {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .explanation {
+      display: none;
+      margin-top: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-left: 4px solid #3b82f6;
+      border-radius: 0 12px 12px 0;
+      animation: slideDown 0.3s ease;
+    }
+
+    .explanation.show {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .explanation-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .explanation-text {
+      color: #1e3a5f;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .correct-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #22c55e;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .track-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    .track-tag.track1 {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .track-tag.track2 {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .track-tag.track3 {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: white;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+
+      .header {
+        padding: 16px;
+      }
+
+      .header h1 {
+        font-size: 1.4rem;
+      }
+
+      .question-card {
+        padding: 16px;
+      }
+
+      .question-text {
+        font-size: 0.95rem;
+      }
+
+      .choice-text {
+        font-size: 0.9rem;
+      }
+
+      .stats {
+        gap: 12px;
+      }
+
+      .stat-item {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>On Tap Trac Nghiem Don</h1>
+      <p>Bo De AI & Machine Learning - Cau hoi 1 dap an dung</p>
+      <div class="stats">
+        <div class="stat-item">
+          Da lam: <span id="answered-count">0</span> / <span id="total-count">47</span>
+        </div>
+        <div class="stat-item">
+          Dung: <span id="correct-count">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="questions-container"></div>
+
+    <div class="footer">
+      <p>De xem loi giai chi tiet, click nut "Hien Thi Giai Thich" ben duoi moi cau</p>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        id: 1,
+        question: "Ban muon build mot he thong tu dong phan loai email support thanh 5 categories. Nhom AI nao phu hop nhat?",
+        choices: [
+          "A. Agentic AI — vi can nhieu buoc phuc tap",
+          "B. Discriminative AI — vi day la bai toan phan loai co output co dinh",
+          "C. Generative AI — vi can sinh response tu dong",
+          "D. Rule-based Bot — vi email support co pattern co dinh"
+        ],
+        correct: "B",
+        explanation: "Phan loai email vao 5 nhom co dinh la bai toan Classification truyen thong, dau ra la nhan co dinh (fixed categories), do do Discriminative AI la toi uu, tiet kiem chi phi va chinh xac nhat ma khong can sinh van ban moi.",
+        track: "Track 1"
+      },
+      {
+        id: 2,
+        question: "Tai sao 'Garbage In, Garbage Out' quan trong hon khi noi ve data cho AI agent?",
+        choices: [
+          "A. AI models nhay cam hon traditional ML voi data quality",
+          "B. Neu data be (OCR loi, metadata thieu, policy cu), agent se hallucinate va tra loi sai du model manh — doi model dat hon khong fix duoc data be",
+          "C. AI can nhieu data hon traditional ML",
+          "D. Data cleaning ton kem hon"
+        ],
+        correct: "B",
+        explanation: "Voi LLM/Agent, neu du lieu nap vao (retrieval context) bi sai lech, thieu sot hoac loi thoi, model du thong minh den dau cung se bi hallucinate theo ngu canh do. Nang cap model khong giai quyet duoc goc rong du lieu be.",
+        track: "Track 1"
+      },
+      {
+        id: 3,
+        question: "Khi expose AI agent nhu REST API, nhung consideration nao quan trong nhat?",
+        choices: [
+          "A. Chi can GET va POST endpoints",
+          "B. Authentication/authorization (ai duoc goi), rate limiting (tran abuse), streaming response (UX tot hon), timeout handling, va versioning (/v1/ de backward compat)",
+          "C. Chi can HTTPS",
+          "D. Chi can JSON format"
+        ],
+        correct: "B",
+        explanation: "Day la cac tieu chuan production API cho AI: kiem soat bao mat (AuthN/AuthZ), chong qua tai chi phi (Rate Limit), cai thien thoi gian phan hoi (Streaming SSE), quan ly ngan ket noi LLM (Timeout) va duy tri tuong thich (Versioning).",
+        track: "Track 2"
+      },
+      {
+        id: 4,
+        question: "Prompt injection attack hoat dong nhu the nao?",
+        choices: [
+          "A. Inject malicious code vao Python environment",
+          "B. User them instruction vao input de override system prompt va khiến agent lam viec nguy hiem",
+          "C. Gui qua nhieu tokens de crash context window",
+          "D. Intercept API call giua client va server"
+        ],
+        correct: "B",
+        explanation: "Prompt injection la ky thuat tan cong tang ngon ngu (semantic attack), ke tan cong long cac cau chi thi vao noi dung nhap vao nham ghi de cac gioi han trong system prompt ban dau cua agent.",
+        track: "Track 1"
+      },
+      {
+        id: 5,
+        question: "Track chuyen sau cua ban la gi?",
+        choices: [
+          "A. AI Applications",
+          "B. AI Infrastructure",
+          "C. AI Product"
+        ],
+        correct: "A,B,C",
+        explanation: "Ca 3 phuong an A, B, C deu chinh xac tuy theo dinh huong chuyen mon cua hoc vien:\n- Track 1 (AI Applications): Phat trien ung dung AI, Agentic Workflows, ReAct, Prompt Engineering & Multi-Agent Systems.\n- Track 2 (AI Infrastructure): Ha tang ky thuat AI, MLOps, LLMOps, GPU FinOps, Vector Database & Model Serving Optimization.\n- Track 3 (AI Product): Quan tri san pham AI, tinh toan tai chinh ROI, phan tich thi truong, khung phap ly (EU AI Act, Luat TTNT VN 2025) & vong doi san pham.",
+        track: "Track 1,2,3"
+      },
+      {
+        id: 6,
+        question: "Trong Supervisor-worker pattern, Supervisor co trach nhiem chinh la gi?",
+        choices: [
+          "A. Thuc hien tat ca tasks",
+          "B. Nhan task, route dung worker, va tong hop ket qua",
+          "C. Monitor system health",
+          "D. Handle errors va retry"
+        ],
+        correct: "B",
+        explanation: "Moi hinh Supervisor dong vai tro dieu phoi trung tam: phan tich nhiem vu tong the, dinh tuyen den worker chuyen tra phu hop va thu thap, tong hop ket qua cuoi cung.",
+        track: "Track 1"
+      },
+      {
+        id: 7,
+        question: "Khi agent tra loi dung fact nhung la fact cu (stale), symptom nay chi ra loi o tang nao?",
+        choices: [
+          "A. Model quality",
+          "B. Prompt engineering",
+          "C. Freshness — publish pipeline hoac cache vector bi stale",
+          "D. Retrieval ranking"
+        ],
+        correct: "C",
+        explanation: "Du lieu tra loi dung logic nhung chua thong tin loi thoi phan anh van de do tuoi moi cua du lieu (Data Freshness), do pipeline cap nhat vector store bi tre hoac cache chua duoc invalidate.",
+        track: "Track 2"
+      },
+      {
+        id: 8,
+        question: "Prompt grounding trong Generation stage nghia la gi?",
+        choices: [
+          "A. Viet prompt ngan gon",
+          "B. Huong dan model chi tra loi tu retrieved context, citation ro nguon, va noi 'khong biet' khi thieu chung cu",
+          "C. Dung system prompt de set role",
+          "D. Grounding la quá trinh training model voi domain data"
+        ],
+        correct: "B",
+        explanation: "Grounding la rang buoc cau tra loi cua model gan chat voi tai lieu duoc truy xuat (retrieved context), bat buoc trich dan nguon va tu choi suy doan khi du lieu khong ho tro.",
+        track: "Track 1"
+      },
+      {
+        id: 9,
+        question: "AI-specific metrics quan trong nhat can monitor cho LLM agent la gi?",
+        choices: [
+          "A. CPU usage va memory",
+          "B. TTFT (Time to First Token), Quality score, Cost per request, Drift (model/data)",
+          "C. HTTP response codes va uptime",
+          "D. Database query time"
+        ],
+        correct: "B",
+        explanation: "Cac chi so dac thu cua LLM gom: Toc do phan hoi token dau tien (TTFT), diem chat luong cau tra loi (Quality/Eval), chi phi token tren moi request (Cost per request) va hien tuong troi dat ngu nghia/phan phoi du lieu (Drift).",
+        track: "Track 2"
+      },
+      {
+        id: 10,
+        question: "Theo AI Readiness Checklist, bai toan nao phu hop nhat de dung AI (Go decision)?",
+        choices: [
+          "A. Tinh toan luong nhan vien theo cong thuc co dinh",
+          "B. Phan tich sentiment cua 10,000 feedback khach hang moi ngay",
+          "C. Kiem tra xem form co du truong bat buoc khong",
+          "D. Hien thi danh sach san pham theo category"
+        ],
+        correct: "B",
+        explanation: "Phan tich sac thai cua luong lon van ban phi cau truc la bai toan phuc tap ma thuat toan truyen thong kho giai quyet hieu qua, day la bai toan ly tuong (Go decision) cho AI.",
+        track: "Track 3"
+      },
+      {
+        id: 11,
+        question: "Semantic caching la cost optimization strategy nhu the nao?",
+        choices: [
+          "A. Cache LLM responses cho exact same queries",
+          "B. Cache LLM responses cho semantically similar queries — 'huy don hang' va 'cancel order' nhan cung response",
+          "C. Compress prompt de giam tokens",
+          "D. Dung cheaper model cho tat ca queries"
+        ],
+        correct: "B",
+        explanation: "Semantic caching dung vector similarity de nhan dien cac cau hoi tuong dong ve mat y nghia (du tu nghia khac nhau) va tra ve ket qua da cache san, giup tiet kiem chi phi goi LLM.",
+        track: "Track 2"
+      },
+      {
+        id: 12,
+        question: "Khi danh gia ROI 3 kich ban cho AI investment, kich ban nao thuong cho ROI cao nhat nhanh nhat?",
+        choices: [
+          "A. Kich ban worst case — de manage risk",
+          "B. Kich ban best case de thuyet phuc stakeholder",
+          "C. Kich ban realistic/base case voi ro assumptions va timeline cu the",
+          "D. Khong can ROI — AI la strategic investment"
+        ],
+        correct: "C",
+        explanation: "Trong tham dinh tai chinh dau tu AI, kich ban Realistic (Base case) voi gia dinh minh bach va moc thoi gian ro rang la co so vung chan nhat de do luong ty suat hoan von dang tin cay.",
+        track: "Track 3"
+      },
+      {
+        id: 13,
+        question: "Prompt kem: 'Viet email cho toi'. Prompt tot theo framework RTCF la gi?",
+        choices: [
+          "A. Viet mot email rat hay va professional",
+          "B. Viet email xin loi khach hang ve giao hang tre 2 ngay, tone lich su, duoi 120 tu, co CTA ro rang",
+          "C. Ban la email writer. Viet email.",
+          "D. Hay la mot professional email writer va Viet email tot nhat co the"
+        ],
+        correct: "B",
+        explanation: "Khung RTCF bao gom Role (Vai tro), Task (Nhiem vu), Context (Ngu canh: tre 2 ngay), Constraints (Rang buoc: duoi 120 tu, lich su), Format (CTA ro rang).",
+        track: "Track 1"
+      },
+      {
+        id: 14,
+        question: "ML (Machine Learning) la mot tap con cua Deep Learning.",
+        choices: [
+          "A. True",
+          "B. False"
+        ],
+        correct: "B",
+        explanation: "Deep Learning la tap con cua Machine Learning (ML bao gom ca hoi quy, SVM, random forest, cay quyet dinh va Deep Learning).",
+        track: "Track 1"
+      },
+      {
+        id: 15,
+        question: "LLM-as-a-Judge co the thay the hoan toan human evaluation trong moi truong hop.",
+        choices: [
+          "A. True",
+          "B. False"
+        ],
+        correct: "B",
+        explanation: "LLM-as-a-Judge khong the thay the con nguoi hoan toan, dac biet trong cac ky thuat ban rui ro cao (y te, phap ly), cac truong hop danh gia tham my chu quan va de hieu chinh (calibrate) chinh ban giam khao LLM.",
+        track: "Track 1"
+      },
+      {
+        id: 16,
+        question: "Prompt injection va jailbreaking la cung mot loai attack.",
+        choices: [
+          "A. True",
+          "B. False"
+        ],
+        correct: "B",
+        explanation: "Day la hai loai tan cong khac nhau: Prompt Injection nham pha vo logic/nhiem vu cua ung dung (ghi de prompt cua he thong), con Jailbreaking nham pha bo cac rao can an toan dao duc cot loi cua nha phat trien model.",
+        track: "Track 2"
+      },
+      {
+        id: 17,
+        question: "Trong RAG system, neu agent tra loi sai, buoc dau tien nen lam la upgrade len model manh hon (vi du: tu GPT-4o sang GPT-4o-mini sang Claude).",
+        choices: [
+          "A. True",
+          "B. False"
+        ],
+        correct: "B",
+        explanation: "Buoc dau tien phai la kiem tra va debug pipeline RAG: xem tai lieu truy xuat co chinh xac khong (retrieval quality), chunking co bi cat cut khong, truoc khi doi model dat tien hon.",
+        track: "Track 1,2,3"
+      },
+      {
+        id: 18,
+        question: "Tinh huong ReAct: Tool schema chi co name va description, LLM goi tool voi empty args va fail, tang temp tu 0 len 0.8 khong giai quyet duoc. Root cause kha nang cao nhat la gi?",
+        choices: [
+          "A. ReAct loop implementation sai — can parser manh hon de extract action tu LLM output",
+          "B. Tool schema thieu 'parameters' field — LLM khong biet phai truyen argument nao; temperature khong lien quan den van de nay",
+          "C. LLM can duoc fine-tune voi domain data san pham moi hieu cach dung tool",
+          "D. Agent can them few-shot examples trong system prompt de hoc cach goi tool"
+        ],
+        correct: "B",
+        explanation: "Khi Tool schema khong dinh nghia ro truong parameters (cac tham so va kieu du lieu), LLM khong the suy luan chinh xac cau truc tham so de truyen vao, danh den goi ham rong.",
+        track: "Track 1"
+      },
+      {
+        id: 19,
+        question: "Tinh huong: BLEU = 0.74 (tot), nhung user satisfaction chi 3.1/10. Root cause kha nang cao nhat la gi?",
+        choices: [
+          "A. Implementation loi — BLEU bi tinh sai, can audit lai evaluation script",
+          "B. BLEU do lexical overlap voi reference answers, khong do kha nang solve problem thuc te; metric khong align voi North Star Metric (task completion / customer satisfaction)",
+          "C. Model sinh ra cau tra loi qua ngan",
+          "D. Nguoi dung danh gia qua khat khe"
+        ],
+        correct: "B",
+        explanation: "BLEU la chi so do do trung lap tu vung (n-gram overlap) trong dich may, khong phan anh duoc tinh chinh xac ve logic hay muc do giai quyet duoc van de thuc te cua khach hang.",
+        track: "Track 3"
+      },
+      {
+        id: 20,
+        question: "Luat TTNT VN 2025 (Luat Tri tue Nhan tao Viet Nam) yeu cau gi doi voi high-risk AI systems?",
+        choices: [
+          "A. Chi can dang ky voi Bo TTTT",
+          "B. Yeu cau danh gia rui ro truoc khi deploy, logging va audit trail, transparency voi nguoi dung (phai biet day la AI), va human oversight mechanism cho quyet dinh quan trong",
+          "C. Khong co yeu cau cu the cho high-risk AI",
+          "D. Chi can comply voi EU AI Act la du"
+        ],
+        correct: "B",
+        explanation: "Cac he thong AI rui ro cao bat buoc phai tuan thu danh gia an toan truoc trien khai, luu vet kiem toan, minh bach thong tin va co su giam sat cua con nguoi (human oversight).",
+        track: "Track 3"
+      },
+      {
+        id: 21,
+        question: "Khi present AI project cho C-suite, frame nao hieu qua nhat?",
+        choices: [
+          "A. Explain ky technical architecture",
+          "B. Frame theo business outcomes: cost savings, revenue impact, risk reduction — voi specific numbers va timeline",
+          "C. Benchmark so voi competitor AI capabilities",
+          "D. Demo technical features"
+        ],
+        correct: "B",
+        explanation: "Lanh dao cap cao (C-suite) quan tam truc tiep toi tac dong kinh doanh: tiet kiem chi phi, thuc day doanh thu, giam thieu rui ro kem so lieu dinh luong va moc thoi gian cu the.",
+        track: "Track 3"
+      },
+      {
+        id: 22,
+        question: "Hidden assumptions trong first product definition nguy hiem vi sao?",
+        choices: [
+          "A. Assumptions khong can validate neu co experience",
+          "B. Assumptions ngam khong duoc test → build product cho thi truong khong ton tai hoac sai target segment",
+          "C. Assumptions chi xuat hien o startup, khong phai enterprise",
+          "D. Assumptions co the fix sau khi launch"
+        ],
+        correct: "B",
+        explanation: "Cac gia dinh ngam khong duoc kiem chung se dan den viec xay dung san pham dua tren nhu cau ao, gay lang phi toan bo chi phi ky thuat cho phan khuc khach hang khong phu hop.",
+        track: "Track 3"
+      },
+      {
+        id: 23,
+        question: "Tai sao AI adoption trong enterprise thuong cham hon so voi expectation?",
+        choices: [
+          "A. Technology chua du mature",
+          "B. Change management: nguoi dung lo ngai mat viec, thieu training, workflow integration phuc tap, va trust building can thoi gian",
+          "C. Budget khong du",
+          "D. IT security qua strict"
+        ],
+        correct: "B",
+        explanation: "Rao can lon nhat trong doanh nghiep la quan tri thay doi (change management), bao gom van hoa tiep nhan, dao tao nhan su, tich hop quy trinh lam viec va xay dung niem tin vao cong nghe moi.",
+        track: "Track 3"
+      },
+      {
+        id: 24,
+        question: "Market analysis cho AI product can tap trung vao dieu gi ngoai market size?",
+        choices: [
+          "A. Chi can biet TAM/SAM/SOM",
+          "B. Timing (thi truong da ready chua?), competition moats, customer adoption barriers, va regulatory landscape",
+          "C. Geography va demographics",
+          "D. So luong competitors"
+        ],
+        correct: "B",
+        explanation: "Thi truong AI dong yecau danh gia toan dien ve tinh thoi diem (Timing), hao ly canh tranh (Moats), rao can ung dung cua khach hang va khung khung phap ly.",
+        track: "Track 3"
+      },
+      {
+        id: 25,
+        question: "Khi build financial model cho AI investment, baseline quan trong nhat can establish la gi?",
+        choices: [
+          "A. Total cost cua AI project",
+          "B. Current cost/time cua process se bi AI replace — de tinh delta (savings/improvements)",
+          "C. Market size cua opportunity",
+          "D. Competitor AI spending"
+        ],
+        correct: "B",
+        explanation: "Phai co duong co so (baseline) la chi phi va thoi gian hien tai cua quy trinh thu cong thi moi do luong duoc gia tri chenh lech (delta) ma AI dem lai.",
+        track: "Track 3"
+      },
+      {
+        id: 26,
+        question: "EU AI Act phan loai AI systems thanh may risk levels?",
+        choices: [
+          "A. 2 — Safe va Unsafe",
+          "B. 3 — Low, Medium, High",
+          "C. 4 — Minimal/No risk, Limited risk, High risk, Unacceptable risk",
+          "D. 5 levels"
+        ],
+        correct: "C",
+        explanation: "Dao luat EU AI Act phan cap thanh 4 cap do rui ro: Rui ro khong the chap nhan (bi cam), Rui ro cao, Rui ro han che (yeu cau minh bach), va Rui ro toi thieu.",
+        track: "Track 3"
+      },
+      {
+        id: 27,
+        question: "AI Roadmap execution khac software roadmap o diem nao quan trong nhat?",
+        choices: [
+          "A. AI roadmap dai hon",
+          "B. AI roadmap phai tich hop eval gates (quality thresholds) va data milestones — khong chi feature delivery",
+          "C. AI roadmap khong can stakeholder buy-in",
+          "D. AI roadmap phai include research phase"
+        ],
+        correct: "B",
+        explanation: "Lo trinh phat trien AI phu thuoc vao tinh bat dinh cua model, do do bat buoc phai co cac cong danh gia chat luong (eval gates) va cac cot moc lam sach/bo sung du lieu truoc khi ban giao tinh nang.",
+        track: "Track 3"
+      },
+      {
+        id: 28,
+        question: "Tinh huong: Data thu thap tu Web form va Email chi phan anh phan nan. Day la loai data quality issue nao va cach fix phu hop?",
+        choices: [
+          "A. Data completeness issue — thieu data tu kenh call center; can them call center transcripts vao pipeline",
+          "B. Selection bias — web form va email chi capture negative feedback (triggered by problems); ket qua khong dai dien cho toan bo khach hang",
+          "C. Data consistency issue — format va ngon ngu khong nhat quat giua 3 nguon, can chuan hoa",
+          "D. Model bias — sentiment model duoc train tren data tieng Anh, khong"
+        ],
+        correct: "B",
+        explanation: "Day la hien tuong thien lech chon mau (Selection Bias): chi nhung khach hang gap su co moi chu dong dien form/gui email, danh den tap du lieu bi ngheng nang ve tieu cuc.",
+        track: "Track 3"
+      },
+      {
+        id: 29,
+        question: "Yeu to nao la bottleneck chinh khi scale LLM serving?",
+        choices: [
+          "A. So luong CPU cores",
+          "B. VRAM (GPU memory) — phai du chua model weights + KV cache cho concurrent requests",
+          "C. Network bandwidth cua instance",
+          "D. SSD storage capacity"
+        ],
+        correct: "B",
+        explanation: "Dung luong bo nho GPU (VRAM) la nut that co chai lon nhat vi vua phai tai trong luong model (weights), vua phai cap phat bo nho KV Cache cho cac luong yeu cau dong thoi.",
+        track: "Track 2"
+      },
+      {
+        id: 30,
+        question: "Cac threat vectors dac thu cho AI infrastructure (khong co trong traditional app security) la gi?",
+        choices: [
+          "A. SQL injection va XSS",
+          "B. Model extraction (reverse engineer model qua API), training data poisoning, adversarial examples, va supply chain attacks (compromised model weights)",
+          "C. DDoS va brute force",
+          "D. Chi API key theft"
+        ],
+        correct: "B",
+        explanation: "Cac nguy co dac thu gom trich xuat model, dau doc du lieu huan luyen, mau du lieu doi khang va tan cong chuoi cung ung model pre-trained.",
+        track: "Track 2"
+      },
+      {
+        id: 31,
+        question: "Data Observability khac voi Application Observability o diem gi?",
+        choices: [
+          "A. Data Observability theo doi database performance",
+          "B. Data Observability monitor health cua data pipelines va data quality (freshness, completeness, schema changes) — khong chi infra",
+          "C. Data Observability chi dung cho batch jobs",
+          "D. Data Observability khong can cho AI"
+        ],
+        correct: "B",
+        explanation: "Data Observability tap trung vao chat luong noi dung va dong chay du lieu (do tuoi, tinh toan ven, phan phoi va su bien doi schema), khac voi App Observability chi do CPU, RAM va HTTP latency.",
+        track: "Track 2"
+      },
+      {
+        id: 32,
+        question: "GPU FinOps cho AI workloads: ky thuat nao giup giam cost nhieu nhat voi trade-off thap nhat?",
+        choices: [
+          "A. Dung spot/preemptible instances cho tat ca workloads ke ca production",
+          "B. Spot instances cho batch/training (fault-tolerant), reserved instances cho production inference (consistent load), va auto-scaling de khong idle",
+          "C. Tat het instances vao ban dem",
+          "D. Chi dung CPU instances de tranh GPU cost"
+        ],
+        correct: "B",
+        explanation: "Ket hop toi uu: dung Spot gia re cho tac vu huan luyen co kha nang chiu loi, dung Reserved cho tai suy luan nen co dinh cua production va kich hoat Auto-scaling theo nhu cau thuc.",
+        track: "Track 2"
+      },
+      {
+        id: 33,
+        question: "Quantization (INT8/INT4) trong model serving danh doi gi?",
+        choices: [
+          "A. Khong co trade-off — INT4 tot hon FP16 moi mat",
+          "B. Giam memory footprint va tang throughput, doi lay nho quality degradation — acceptable voi nhieu production tasks",
+          "C. Tang accuracy nhung cham hon",
+          "D. Chi dung duoc voi model nho hon 7B"
+        ],
+        correct: "B",
+        explanation: "Luong tu hoa (Quantization) nen trong so tu 16-bit xuong 8-bit hoac 4-bit giup giam manh bo nho VRAM va tang toc do xu ly, chi danh doi mot phan rat nho do chinh xac.",
+        track: "Track 2"
+      },
+      {
+        id: 34,
+        question: "Data Lakehouse ket hop uu diem cua Data Lake va Data Warehouse nhu the nao?",
+        choices: [
+          "A. Lakehouse chi luu structured data",
+          "B. Lakehouse = Data Lake storage (raw, flexible, cheap) + Data Warehouse analytics (ACID transactions, schema enforcement, query performance)",
+          "C. Lakehouse replace ca hai",
+          "D. Lakehouse dung cho real-time streaming only"
+        ],
+        correct: "B",
+        explanation: "Kien truc Lakehouse mang lai kha nang luu tru linh hoat, gia re cua Data Lake ket hop cung kha nang quan tri giao dich ACID, kiem soat schema va hieu nang cao cua Data Warehouse.",
+        track: "Track 2"
+      },
+      {
+        id: 35,
+        question: "Trong CI/CD pipeline cho AI, 'eval gate' hoat dong nhu the nao?",
+        choices: [
+          "A. Eval gate la buoc manual review truoc khi deploy",
+          "B. Eval gate chay automated evaluation sau moi code/prompt/model change — chi allow deploy neu eval scores vuot thresholds (faithfulness, accuracy, safety)",
+          "C. Eval gate chi check syntax cua prompt",
+          "D. Eval gate la load testing tool"
+        ],
+        correct: "B",
+        explanation: "Cong danh gia (Eval Gate) la chot chan tu dong trong pipeline CI/CD: tu dong kiem thu va ngan chan viec trien khai neu cac chi so chat luong/an toan khong vuot qua nguong cam ket.",
+        track: "Track 2"
+      },
+      {
+        id: 36,
+        question: "Model serving optimization strategies nao giup giam latency nhieu nhat?",
+        choices: [
+          "A. Dung model nho hon",
+          "B. Batching requests, KV cache, speculative decoding, va quantization — ket hop de reduce TTFT va throughput cost",
+          "C. Tang GPU memory",
+          "D. Reduce context window"
+        ],
+        correct: "B",
+        explanation: "Su ket hop giua Continuous Batching, luu tru KV Cache, giai ma pho dong do (Speculative Decoding) va luong tu hoa mang lai hieu qua toi uu do tre toan dien nhat.",
+        track: "Track 2"
+      },
+      {
+        id: 37,
+        question: "Tinh huong: HR Chatbot khong tim thay thong tin 'leave advance'. Root cause kha nang cao nhat la gi?",
+        choices: [
+          "A. Embedding model khong ho tro tieng Viet, can doi sang multilingual model",
+          "B. Chunk size qua lon — 1 chunk chua nhieu sections, semantic signal cua 'leave advance' bi dilute, retrieval score thap",
+          "C. Vector database bi corrupt, can rebuild index tu dau",
+          "D. Temperature qua cao trong generation step khiến model hallucinate 'khong biet'"
+        ],
+        correct: "B",
+        explanation: "Khi chunk qua lon, vector embedding dai dien cho y nghia chung cua toan bo khoi van ban khiến tin hieu ngu nghia cua chi tiet nho bi phan tan (diluted) va truot khoi top ket qua truy xuat.",
+        track: "Track 2"
+      },
+      {
+        id: 38,
+        question: "Khi nao single-agent architecture that bai va can nang len advanced patterns?",
+        choices: [
+          "A. Khi can latency thap",
+          "B. Khi task can nhieu iterative refinement, complex planning voi backtracking, hoac exploration cua nhieu solution paths",
+          "C. Khi can them nhieu tools",
+          "D. Khi context window day"
+        ],
+        correct: "B",
+        explanation: "Mot agent don le se bộc lộ han che khi doi mat voi quy trinh phuc tap yeu cau lap ke hoach nhieu tang, quay lui sua sai (backtracking) hoac phoi hop nhieu goc nhin chuyen biet.",
+        track: "Track 1"
+      },
+      {
+        id: 39,
+        question: "LoRA (Low-Rank Adaptation) co che hoat dong nhu the nao?",
+        choices: [
+          "A. Train lai toan bo model weights",
+          "B. Freeze pre-trained weights, them low-rank adapter matrices nho vao attention layers — chi train adapters",
+          "C. Distill model lon thanh model nho",
+          "D. Quantize model de chay tren hardware yeu hon"
+        ],
+        correct: "B",
+        explanation: "LoRA dong bang toan bo trong so goc cua model pre-trained va chen them cac ma tran bien doi hang thap vao cac tang chu y, chi huan luyen cac ma tran phu nay de tiet kiem tai nguyen.",
+        track: "Track 2"
+      },
+      {
+        id: 40,
+        question: "Faithfulness metric trong RAGAS do luong dieu gi chinh xac?",
+        choices: [
+          "A. Accuracy cua answer so voi ground truth",
+          "B. Ty le claims trong generated answer co duoc support boi retrieved context — khong duoc suy dien ngoai context",
+          "C. Similarity giua question va answer",
+          "D. Completeness cua answer"
+        ],
+        correct: "B",
+        explanation: "Chi so Faithfulness (do trung thuc) kiem tra ty le cac nhan dinh trong cau tra loi co bang chung truc tiep tu ngu canh truy xuat hay khong, nham phat hien hien tuong ao giac (hallucination).",
+        track: "Track 1,2,3"
+      },
+      {
+        id: 41,
+        question: "5 Agentic Workflow Patterns cua Anthropic la gi?",
+        choices: [
+          "A. Plan, Execute, Review, Revise, Publish",
+          "B. Prompt Chaining, Routing, Parallelization, Orchestrator-subagents, Evaluator-optimizer",
+          "C. Input, Process, Output, Feedback, Improve",
+          "D. Retrieve, Augment, Generate, Evaluate, Deploy"
+        ],
+        correct: "B",
+        explanation: "5 moi hinh chuan cua Anthropic bao gom: Chuoi cau lenh (Chaining), Dinh tuyen (Routing), Song song hoa (Parallelization), Bo dieu phoi - cap duoi (Orchestrator-subagents) va Danh gia - Toi uu hoa (Evaluator-optimizer).",
+        track: "Track 1"
+      },
+      {
+        id: 42,
+        question: "Tai sao Basic RAG that bai trong production khi demo chay tot?",
+        choices: [
+          "A. Production co nhieu users hon",
+          "B. Production data phuc tap hon, co noise, inconsistency, va edge cases ma demo data khong co",
+          "C. Model qua yeu",
+          "D. Infrastructure khong du"
+        ],
+        correct: "B",
+        explanation: "Du lieu demo thuong sach va don gian; trong moi truong thuc te, du lieu co tinh phan tan, dinh dang phuc tap, tai lieu mau thuan va cac cau hoi mo ho rang lam sup do pipeline RAG co ban.",
+        track: "Track 2"
+      },
+      {
+        id: 43,
+        question: "PreRAG (Fix ONLINE — truoc khi retrieve) bao gom nhung ky thuat nao?",
+        choices: [
+          "A. Chi clean user query",
+          "B. Query expansion, query rewriting, HyDE (Hypothetical Document Embeddings), va query routing theo intent",
+          "C. Translate query sang tieng Anh",
+          "D. Cache query results"
+        ],
+        correct: "B",
+        explanation: "PreRAG xu ly cau hoi truc tuyen truoc khi truy van: mo rong tu khoa, viet lai cau truy van ro nghia hon, tao tai lieu gia dinh (HyDE) va phan luong cau hoi theo y dinh nguoi dung.",
+        track: "Track 2"
+      },
+      {
+        id: 44,
+        question: "Context Engineering Framework giai quyet van de gi trong memory management?",
+        choices: [
+          "A. Tang context window size cua model",
+          "B. Quyet dinh cai gi dua vao context window co han: prioritize, compress, retrieve dung memories theo relevance",
+          "C. Compress toan bo conversation history",
+          "D. Cache context de reuse"
+        ],
+        correct: "B",
+        explanation: "Context Engineering toi uu hoa viec su dung cua so ngu canh: chon loc thong tin uu tien, co dong lich su va truy xuat cac mua ky uc phu hop nhat de dua vao prompt.",
+        track: "Track 2"
+      },
+      {
+        id: 45,
+        question: "Reflexion agent giai duoc bai toan nao ma ReAct khong lam duoc?",
+        choices: [
+          "A. Goi nhieu tools song song",
+          "B. Tu danh gia output cua minh va sua loi trong vong lap tiep theo — them self-evaluation layer",
+          "C. Handle multi-modal input",
+          "D. Reduce latency"
+        ],
+        correct: "B",
+        explanation: "Kien truc Reflexion mo rong ReAct bang cach bo sung kha nang tu phan tu (self-reflection): agent tu phan tich ket qua quan sat, ghi nho loi sai vao bo nho tam de dieu chinh hanh vi o vong lap sau.",
+        track: "Track 1"
+      },
+      {
+        id: 46,
+        question: "He thong RAG cho Fintech: Trong vector store van con chunk tu file cu (sla-p1-2024.pdf) do thieu metadata effective_date. Root cause thuoc tang nao?",
+        choices: [
+          "A. Retrieval",
+          "B. Indexing",
+          "C. Generation",
+          "D. Evaluation"
+        ],
+        correct: "B",
+        explanation: "Loi nam o tang Indexing: qua trinh nap va danh chi muc tai lieu khong thiet ke truong metadata thoi gian hieu luc (effective_date) va khong co co che xoa/ghi de tai lieu het hieu luc.",
+        track: "Track 2"
+      },
+      {
+        id: 47,
+        question: "Ngoai loi Indexing, hay de xuat them 1 kiem tra o tang Generation de tran bay fact cu?",
+        choices: [
+          "A. Tang temperature",
+          "B. Yeu cau LLM kiem tra citation ngay hieu luc trong context va canh bao neu co mau thuan phien ban",
+          "C. Giam max_tokens",
+          "D. Doi prompt sang tieng Anh"
+        ],
+        correct: "B",
+        explanation: "O tang sinh van ban (Generation), cau hinh system prompt yeu cau LLM trich dan ngay hieu luc va phat hien canh bao xung dot neu co hai van ban dua ra so lieu khac nhau.",
+        track: "Track 2"
+      }
+    ];
+
+    let answeredCount = 0;
+    let correctCount = 0;
+    const answeredQuestions = new Set();
+
+    function renderQuestions() {
+      const container = document.getElementById('questions-container');
+
+      questions.forEach((q, index) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.id = `question-${q.id}`;
+
+        const correctLetter = Array.isArray(q.correct) ? q.correct[0] : q.correct;
+        const isMultiAnswer = Array.isArray(q.correct);
+
+        card.innerHTML = `
+          <div class="question-header">
+            <div class="question-number">${index + 1}</div>
+            <div class="question-text">${q.question}</div>
+          </div>
+          <div class="choices" id="choices-${q.id}">
+            ${q.choices.map((choice, i) => {
+              const letter = String.fromCharCode(65 + i);
+              return `
+                <div class="choice" data-question="${q.id}" data-letter="${letter}" onclick="selectChoice(${q.id}, '${letter}')">
+                  <div class="choice-letter">${letter}</div>
+                  <div class="choice-text">${choice.substring(3)}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <button class="btn-explain" id="btn-${q.id}" onclick="toggleExplanation(${q.id})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            Hien Thi Giai Thich
+          </button>
+          <div class="explanation" id="explanation-${q.id}">
+            <div class="explanation-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+              Loi Giai Chi Tiet
+            </div>
+            <div class="correct-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Dap an dung: ${isMultiAnswer ? q.correct.join(', ') : q.correct}
+            </div>
+            <div class="explanation-text">${q.explanation.replace(/\n/g, '<br>')}</div>
+            <div class="track-tag ${q.track.includes('Track 1') ? 'track1' : q.track.includes('Track 2') ? 'track2' : 'track3'}">${q.track}</div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function selectChoice(questionId, letter) {
+      const q = questions.find(q => q.id === questionId);
+      const correctAnswers = Array.isArray(q.correct) ? q.correct : [q.correct];
+      const isCorrect = correctAnswers.includes(letter);
+
+      const choicesContainer = document.getElementById(`choices-${questionId}`);
+      const choices = choicesContainer.querySelectorAll('.choice');
+
+      // Mark all as shown (disable further selection)
+      choices.forEach(choice => {
+        choice.style.pointerEvents = 'none';
+        const choiceLetter = choice.dataset.letter;
+
+        if (correctAnswers.includes(choiceLetter)) {
+          choice.classList.add('correct');
+        } else if (choiceLetter === letter && !isCorrect) {
+          choice.classList.add('wrong');
+        }
+      });
+
+      // Update stats if not already answered
+      if (!answeredQuestions.has(questionId)) {
+        answeredQuestions.add(questionId);
+        answeredCount++;
+        if (isCorrect) {
+          correctCount++;
+        }
+        updateStats();
+      }
+    }
+
+    function toggleExplanation(questionId) {
+      const explanation = document.getElementById(`explanation-${questionId}`);
+      const btn = document.getElementById(`btn-${questionId}`);
+
+      explanation.classList.toggle('show');
+      btn.classList.toggle('active');
+
+      if (explanation.classList.contains('show')) {
+        btn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          An Giai Thich
+        `;
+      } else {
+        btn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          Hien Thi Giai Thich
+        `;
+      }
+    }
+
+    function updateStats() {
+      document.getElementById('answered-count').textContent = answeredCount;
+      document.getElementById('correct-count').textContent = correctCount;
+    }
+
+    // Initialize
+    renderQuestions();
+  </script>
+</body>
+</html>
