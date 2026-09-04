@@ -1264,21 +1264,21 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 21 (Ảnh: Screenshot 2026-07-07 114918.png) & Đề 2 - Câu 20",
         "question": "Điền vào chỗ trống: Trong ReAct pattern, mỗi iteration của vòng lặp gồm 3 bước: [1] → [2] → [3]. Bước [1] là gì?",
-        "answer": "thought (Suy nghĩ / Lập luận bước tiếp theo)",
+        "answer": "thought (Thought: Suy nghĩ / Lập luận bước tiếp theo trước khi hành động)",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 20 (Ảnh: Screenshot 2026-07-07 114913.png) & Đề 2 - Câu 21",
         "question": "Điền vào chỗ trống: Bước [2] là nơi agent thực tế gọi tool hoặc thực hiện hành động. Bước [2] là gì?",
-        "answer": "action (Hành động / Gọi công cụ)",
+        "answer": "action (Action: Hành động gọi công cụ / Tool calling)",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 3",
         "source": "Đề 1 - Câu 23 (Ảnh: Screenshot 2026-07-07 114927.png) & Đề 2 - Câu 18",
         "question": "Điền vào chỗ trống: Bước [3] là kết quả trả về từ tool được đưa vào context. Bước [3] là gì?",
-        "answer": "observation (Quan sát / Nhận kết quả từ tool)",
+        "answer": "observation (Observation: Quan sát / Nhận kết quả từ công cụ trả về đưa vào ngữ cảnh)",
         "points": "1.0 điểm"
       }
     ]
@@ -1308,21 +1308,21 @@
         "num": "Câu con 1",
         "source": "Đề 2 - Câu 19 (Ảnh: Screenshot from 2026-07-25 11-18-03.png)",
         "question": "Trong API LLM, tham số [1] kiểm soát mức độ ngẫu nhiên của output (0 = deterministic, cao = creative/random). Tham số [1] là gì?",
-        "answer": "temperature",
+        "answer": "temperature (Kiểm soát độ ngẫu nhiên / sáng tạo của output: 0 = tất định chuẩn xác, 1 = sáng tạo bay bổng)",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 24 (Ảnh: Screenshot 2026-07-07 114932.png) & Đề 2 - Câu 22",
         "question": "Trong API LLM, tham số [2] giới hạn độ dài tối đa của response tính bằng tokens. Tham số [2] là gì?",
-        "answer": "max_tokens (hoặc max_output_tokens)",
+        "answer": "max_tokens (hoặc max_output_tokens: Giới hạn độ dài tối đa của response tính bằng token)",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 3",
         "source": "Đề 1 - Câu 22 (Ảnh: Screenshot 2026-07-07 114923.png) & Đề 2 - Câu 24",
         "question": "Trong API LLM, tham số [3] kiểm soát xác suất tích lũy của token pool được sample (nucleus sampling). Tham số [3] là gì?",
-        "answer": "top_p",
+        "answer": "top_p (Giới hạn tập token theo xác suất tích lũy / Nucleus sampling)",
         "points": "1.0 điểm"
       }
     ]
@@ -1352,21 +1352,21 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 25 (Ảnh: Screenshot 2026-07-07 114936.png) & Đề 2 - Câu 24",
         "question": "Quá trình chuyển đổi văn bản (text) thành vector số học gọi là [1]?",
-        "answer": "embedding",
+        "answer": "embedding (Chuyển đổi văn bản thành vector số học nhiều chiều)",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 26 (Ảnh: Screenshot 2026-07-07 114940.png) & Đề 2 - Câu 25",
         "question": "Để tìm document gần nhất với query trong vector store, ta so sánh vector bằng phép đo [2] (đo góc giữa 2 vector)?",
-        "answer": "cosine similarity (hoặc vector similarity)",
+        "answer": "cosine similarity (Độ đo khoảng cách góc giữa 2 vector để tính độ tương đồng)",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 3",
         "source": "Đề 2 - Câu 26 (Ảnh: Screenshot from 2026-07-25 11-18-17.png)",
         "question": "Kết quả trả về từ vector search là danh sách [3] documents có điểm tương đồng cao nhất?",
-        "answer": "top_k (hoặc k documents)",
+        "answer": "top_k (hoặc k documents: Danh sách k tài liệu có điểm tương đồng cao nhất được truy xuất / Retrieval)",
         "points": "1.0 điểm"
       }
     ]
@@ -1396,7 +1396,7 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 27 (Ảnh: Screenshot 2026-07-07 114949.png)",
         "question": "Ghép nối định nghĩa 5 khái niệm AI: A1. Discriminative AI, A2. Generative AI, A3. Agentic AI, A4. LLM, A5. Transformer với 5 mô tả cột B.",
-        "answer": "A1: Phân loại/Dự đoán nhãn; A2: Sinh dữ liệu mới; A3: Tự lập kế hoạch và gọi tool; A4: Model ngôn ngữ lớn decoder-only; A5: Mạng nơ-ron Self-Attention.",
+        "answer": "A1: Discriminative AI - Phân loại/Dự đoán nhãn; A2: Generative AI - Tạo dữ liệu mới; A3: Agentic AI - Tự lập kế hoạch + Gọi tool; A4: LLM - Mô hình ngôn ngữ lớn; A5: Transformer - Mạng nơ-ron Self-Attention.",
         "points": "1.5 điểm"
       },
       {
@@ -1433,14 +1433,14 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 29 (Ảnh: Screenshot 2026-07-07 115000.png)",
         "question": "Xác định 5 bước rời rạc trong RAG Indexing Pipeline: [A] Chunk, [B] Load, [C] Embed, [D] Store, [E] Clean.",
-        "answer": "Nắm vững chức năng của từng bước từ nạp dữ liệu thô đến lưu vector database.",
+        "answer": "5 bước RAG Indexing: [B] Load (Nạp tài liệu thô) → [E] Clean (Làm sạch) → [A] Chunk (Cắt đoạn nhỏ) → [C] Embed (Chuyển thành vector) → [D] Store (Lưu vector database).",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 30 (Ảnh: Screenshot 2026-07-07 115005.png)",
         "question": "Sắp xếp 5 bước trên theo đúng thứ tự logic từ đầu đến cuối (định dạng: ?→?→?→?→?)?",
-        "answer": "B → E → A → C → D (Load → Clean → Chunk → Embed → Store)",
+        "answer": "B → E → A → C → D (Load → Clean → Chunk → Embed → Store - Mẹo nhớ: Nạp → Lọc → Cắt → Đổi → Lưu)",
         "points": "2.0 điểm"
       }
     ]
@@ -1470,7 +1470,7 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 31 (Ảnh: Screenshot 2026-07-07 115011.png)",
         "question": "Xác định 5 giai đoạn trong vòng đời phát triển sản phẩm AI: [A] Eval, [B] Problem Definition, [C] Deploy & Monitor, [D] Data Prep, [E] Model Selection & Dev.",
-        "answer": "Phân biệt rõ giai đoạn đánh giá (Eval) phải nằm trước khi Triển khai (Deploy).",
+        "answer": "5 giai đoạn AI Product: [B] Problem Definition (Xác định bài toán) → [D] Data Prep (Chuẩn bị dữ liệu) → [E] Model Selection & Dev (Chọn mô hình) → [A] Eval (Đánh giá) → [C] Deploy & Monitor (Triển khai & Giám sát).",
         "points": "1.0 điểm"
       },
       {
@@ -1507,14 +1507,14 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 33 (Ảnh: Screenshot 2026-07-07 115021.png)",
         "question": "Thiết kế kiến trúc hệ thống Multi-Agent: Phân tích nhiệm vụ của Supervisor Agent và 3 Worker Agents chuyên trách?",
-        "answer": "Supervisor tiếp nhận, phân loại intent và điều phối; Worker xử lý nghiệp vụ sâu (Kỹ thuật, Thanh toán, Tài khoản).",
+        "answer": "Supervisor Agent: Nhận phản hồi thô, phân loại intent và điều phối; 3 Worker Agents chuyên trách: Worker 1 (Phân tích cảm xúc: Tích cực/Tiêu cực/Trung tính), Worker 2 (Trích xuất chủ đề: Giá, Vận chuyển, Lỗi, CSKH), Worker 3 (Tổng hợp số liệu và sinh báo cáo tóm tắt).",
         "points": "1.5 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 34 (Ảnh: Screenshot 2026-07-07 115026.png)",
         "question": "Thiết kế vòng lặp phản hồi (Feedback Loop) và cơ chế Human-in-the-loop khi Worker gặp lỗi hoặc độ tin cậy thấp?",
-        "answer": "Nếu confidence < 80% hoặc Worker trả về lỗi, chuyển trạng thái cho Human Agent xử lý và lưu trace để fine-tune.",
+        "answer": "Feedback Loop & Human-in-the-loop: Khi Worker gặp lỗi hoặc độ tin cậy < 80%, hệ thống tự động chuyển tiếp (Escalate) cho chuyên viên con người thẩm định; dữ liệu con người sửa được lưu vào hàng đợi Active Learning để fine-tune mô hình định kỳ.",
         "points": "1.5 điểm"
       }
     ]
@@ -1546,14 +1546,14 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 35 (Ảnh: Screenshot 2026-07-07 115031.png)",
         "question": "Định nghĩa Output Contract trong Prompt Engineering và liệt kê 3 thành phần cốt lõi bắt buộc phải có?",
-        "answer": "Output Contract là hợp đồng định dạng đầu ra; gồm: Định dạng chuẩn (JSON Schema), Ràng buộc giá trị (Constraints) và Quy tắc xử lý lỗi (Fallback/Error Handling).",
+        "answer": "Output Contract là quy định bắt buộc trong prompt yêu cầu AI trả về đúng khuôn mẫu (JSON chuẩn). 3 thành phần cốt lõi: 1. Format/Schema (JSON Schema, danh sách trường key bắt buộc); 2. Constraints (Ràng buộc giá trị, enum hợp lệ, cấm văn bản thừa ngoài JSON); 3. Fallback/Error Handling (Quy tắc xử lý khi thiếu dữ liệu hoặc gặp lỗi).",
         "points": "1.5 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 36 (Ảnh: Screenshot 2026-07-07 115036.png)",
         "question": "Tại sao Output Contract là điều kiện bắt buộc để đưa AI Agent vào Production API tích hợp với Backend?",
-        "answer": "Chống vỡ cấu trúc parser backend, đảm bảo tính tất định dữ liệu và ngăn chặn lỗi runtime hệ thống.",
+        "answer": "2 lý do sống còn trong Production API: 1. Chống vỡ parser backend, giúp json.loads() đọc tự động không bị sập app do AI chém lời chào thừa; 2. Đảm bảo tính tất định dữ liệu và tích hợp mượt mà trong chuỗi công cụ (Pipeline/Tool Chaining).",
         "points": "1.5 điểm"
       }
     ]
@@ -1583,14 +1583,14 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 37 (Ảnh: Screenshot 2026-07-07 115042.png)",
         "question": "Đề xuất chiến lược Chunking tối ưu cho tài liệu Chính sách hoàn tiền nhằm tránh mất tín hiệu ngữ nghĩa?",
-        "answer": "Semantic Chunking: Tách theo từng điều khoản độc lập, độ dài 200 - 400 tokens kèm overlap 15%.",
+        "answer": "Semantic Chunking: Cắt trọn vẹn từng điều khoản độc lập (200 - 400 tokens, overlap 15%), tuyệt đối không cắt ngang giữa câu để giữ nguyên vẹn liên kết giữa thời hạn và điều kiện hoàn tiền.",
         "points": "1.5 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 38 (Ảnh: Screenshot 2026-07-07 115047.png)",
         "question": "Thiết kế 3 trường Metadata quan trọng nhất cần gắn vào từng chunk để phục vụ lọc dữ liệu chính xác?",
-        "answer": "effective_date (Ngày hiệu lực), category (Danh mục chính sách), policy_id / source_url (Nguồn tài liệu gốc).",
+        "answer": "4 trường Metadata quan trọng: 1. title (Tên tài liệu); 2. category (Danh mục CSKH/Hoàn tiền); 3. version (Phiên bản chính sách); 4. source_url / policy_id (Đường link văn bản gốc để truy xuất và kiểm chứng).",
         "points": "1.5 điểm"
       }
     ]
@@ -1620,14 +1620,14 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 39 (Ảnh: Screenshot 2026-07-07 115053.png)",
         "question": "Định nghĩa P99 Latency là gì và phân biệt sự khác nhau căn bản giữa P99 Latency với Mean Latency (Độ trễ trung bình)?",
-        "answer": "P99 là mốc độ trễ mà 99% người dùng nhận được phản hồi nhanh hơn; Mean Latency bị làm mờ bởi các yêu cầu nhanh, che giấu các ca tắc nghẽn nặng.",
+        "answer": "P99 Latency là mốc độ trễ mà 99% yêu cầu được xử lý nhanh hơn, đo lường trải nghiệm của 1% người dùng chịu độ trễ tồi tệ nhất. Khác với Mean Latency (bị kéo thấp bởi các request ngắn/dễ, che giấu các ca treo máy hoặc nghẽn mạng).",
         "points": "1.5 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 40 (Ảnh: Screenshot 2026-07-07 115058.png)",
         "question": "Vì sao trong kiến trúc Multi-Agent phục vụ Production, chỉ số P99 Latency là SLA quyết định sống còn của hệ thống?",
-        "answer": "Vì trong chuỗi gọi nhiều LLM song song hoặc tuần hoàn, độ trễ toàn hệ thống bị chi phối bởi bước chậm nhất (hiệu ứng Tail Latency Amplification).",
+        "answer": "Lý do P99 là SLA sống còn trong Multi-Agent: Do chuỗi gọi nhiều LLM và tool tuần hoàn, độ trễ toàn hệ thống bị chi phối bởi bước chậm nhất (hiệu ứng Tail Latency Amplification) làm tê liệt trải nghiệm người dùng lúc cao điểm.",
         "points": "1.5 điểm"
       }
     ]
@@ -1657,14 +1657,14 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 41 (Ảnh: Screenshot 2026-07-07 115103.png)",
         "question": "Viết Trace thực thi Vòng lặp 1 của ReAct Agent khi người dùng hỏi: 'Tỷ giá USD/VND hiện tại là bao nhiêu và 100 USD bằng bao nhiêu VND?'",
-        "answer": "Thought 1: Cần tra cứu tỷ giá USD/VND; Action 1: get_exchange_rate(pair='USD/VND'); Observation 1: 25,450 VND.",
+        "answer": "Vòng lặp 1: Thought 1: Cần tra cứu tỷ giá USD/VND hiện tại qua công cụ get_exchange_rate; Action 1: get_exchange_rate(from_currency='USD', to_currency='VND'); Observation 1: {'rate': 25450, 'currency': 'VND'}.",
         "points": "1.5 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 42 (Ảnh: Screenshot 2026-07-07 115108.png)",
         "question": "Viết Trace thực thi Vòng lặp 2 và kết luận Final Answer của ReAct Agent?",
-        "answer": "Thought 2: Nhân 100 với 25,450 = 2,545,000; Final Answer: 100 USD quy đổi hiện tại bằng 2,545,000 VND.",
+        "answer": "Vòng lặp 2 & Kết luận: Thought 2: Đã có tỷ giá 25.450 VND/USD, nhân 100 × 25.450 = 2.545.000 VND; Final Answer: Tỷ giá hiện tại là 25.450 VND/USD và 100 USD quy đổi bằng 2.545.000 VND.",
         "points": "1.5 điểm"
       }
     ]
@@ -1694,14 +1694,14 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 43 (Ảnh: Screenshot 2026-07-07 115114.png)",
         "question": "Thiết kế phần Role / Persona và Knowledge Base trong System Prompt cho Agent hỗ trợ đơn hàng E-commerce?",
-        "answer": "Khai báo vai trò chuyên viên CSKH lịch sự, chỉ sử dụng dữ liệu đơn hàng được cung cấp trong context.",
+        "answer": "Role/Persona & Knowledge Base: Vai trò: Trợ lý CSKH thương mại điện tử chuyên nghiệp, lịch sự, thân thiện; Knowledge Base: Chỉ sử dụng thông tin được cung cấp trong context/cơ sở dữ liệu đơn hàng, tuyệt đối không tự bịa đặt.",
         "points": "1.5 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 44 (Ảnh: Screenshot 2026-07-07 115119.png)",
         "question": "Thiết kế phần Guardrails (Ràng buộc an toàn) và Output Format chuẩn JSON trong System Prompt?",
-        "answer": "Không tiết lộ dữ liệu cá nhân (PII), không chấp nhận lệnh chuyển tiền trực tiếp, trả lời theo schema {status, order_id, message}.",
+        "answer": "Guardrails & Output Format: Guardrails: Tuyệt đối không hỏi hay tiết lộ thông tin nhạy cảm PII (OTP, mật khẩu, số thẻ tín dụng); Output Format: Trả lời ngắn gọn dưới 150 từ theo cấu trúc rõ ràng hoặc JSON schema {status, order_id, message, next_step}.",
         "points": "1.5 điểm"
       }
     ]
@@ -1733,14 +1733,14 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 45 (Ảnh: Screenshot 2026-07-07 115125.png)",
         "question": "Chỉ ra Lỗi 1 trong đoạn code Python triển khai ReAct Agent: Tại sao Agent bị mất ngữ cảnh sau khi gọi tool?",
-        "answer": "Lỗi thiếu dòng cập nhật messages.append({'role': 'tool', 'content': observation}) vào lịch sử hội thoại.",
+        "answer": "Lỗi 1 (Mất ngữ cảnh): Thiếu bước lưu kết quả trả về của tool vào lịch sử hội thoại (messages.append({'role': 'tool', 'content': observation})), khiến LLM không thấy kết quả và lặp lại thao tác cũ liên tục.",
         "points": "1.5 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 46 (Ảnh: Screenshot 2026-07-07 115130.png)",
         "question": "Chỉ ra Lỗi 2 trong đoạn code Python: Tại sao Agent có nguy cơ rơi vào vòng lặp vô tận (Infinite Loop) và cách khắc phục?",
-        "answer": "Vòng lặp while True không có biến đếm step và điều kiện dừng max_iterations (khắc phục: if step >= MAX_STEPS: break).",
+        "answer": "Lỗi 2 (Vòng lặp vô tận & Khắc phục): Vòng lặp while True không có biến đếm step và thiếu điều kiện dừng; Khắc phục: Khởi tạo step = 0, sau mỗi vòng lặp step += 1, nếu step >= MAX_STEPS (ví dụ 5) hoặc nhận được Final Answer thì break.",
         "points": "1.5 điểm"
       }
     ]
@@ -1770,21 +1770,21 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 47 (Ảnh: Screenshot 2026-07-07 115135.png)",
         "question": "Tính toán chi phí vận hành nhân sự thủ công hiện tại (Baseline Cost) của đội CSKH 8 người trong 1 năm?",
-        "answer": "8 người × 8 giờ × 22 ngày × 12 tháng × 50.000 VNĐ = 921,6 triệu VNĐ / năm.",
+        "answer": "Chi phí baseline nhân sự thủ công 1 năm: 8 người × 8 giờ/ngày × 22 ngày/tháng × 12 tháng × 50.000 VNĐ/giờ = 921,6 triệu VNĐ / năm.",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 48 (Ảnh: Screenshot 2026-07-07 115140.png)",
         "question": "Tính toán tổng chi phí đầu tư và vận hành hệ thống AI trong năm đầu tiên (bao gồm Setup và Opex token/server)?",
-        "answer": "Chi phí Setup (200 triệu) + Chi phí vận hành năm 1 (180 triệu) = 380 triệu VNĐ.",
+        "answer": "Tổng chi phí AI năm đầu tiên: Chi phí cài đặt ban đầu (Setup): 200 triệu + Chi phí vận hành Opex (15 triệu × 12 tháng = 180 triệu) = 380 triệu VNĐ.",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 3",
         "source": "Đề 1 - Câu 49 (Ảnh: Screenshot 2026-07-07 115145.png)",
         "question": "Tính số tiền tiết kiệm ròng và Tỷ suất hoàn vốn ROI (%) của dự án AI sau năm đầu tiên?",
-        "answer": "Tiết kiệm ròng = 921,6tr - 380tr = 541,6 triệu VNĐ; ROI = (541,6 / 380) × 100% = 142.5%.",
+        "answer": "Tiết kiệm ròng & ROI: Lợi ích ròng = 921,6 triệu - 380 triệu = 541,6 triệu VNĐ; ROI = (541,6 / 380) × 100% = 142,5%. Kết luận: Dự án RẤT ĐÁNG ĐẦU TƯ vì ROI đạt 142,5% và thời gian hoàn vốn chỉ khoảng 5 tháng.",
         "points": "1.0 điểm"
       }
     ]
@@ -1816,21 +1816,21 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 50 (Ảnh: Screenshot 2026-07-07 115150.png)",
         "question": "Phân tích 3 lỗi sai nghiêm trọng trong quy trình triển khai phiên bản model GPT-4o của team AI vào 17h thứ Sáu?",
-        "answer": "Deploy sát cuối tuần (Friday Deploy), thiếu bộ test kiểm thử đối sánh tự động (Golden Eval), không có cơ chế Canary / Rollback khẩn cấp.",
+        "answer": "3 lỗi sai nghiêm trọng: 1. Triển khai vào chiều thứ Sáu (Friday Deploy không có người trực cứu trợ); 2. Thiếu bộ kiểm thử tự động Golden Eval (không đo độ trễ và chi phí trước khi phát hành); 3. Thiếu kiểm thực Output Contract làm gãy backend và không có cơ chế Canary / Rollback tự động.",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 51 (Ảnh: Screenshot 2026-07-07 115155.png)",
         "question": "Xây dựng kế hoạch ứng phó sự cố khẩn cấp (Incident Response) 4 bước để cứu vãn hệ thống ngay trong đêm thứ Sáu?",
-        "answer": "Bước 1: Rollback ngay về GPT-3.5; Bước 2: Bật thông báo fallback; Bước 3: Thu thập log lỗi; Bước 4: Tái hiện sự cố trong staging.",
+        "answer": "Kế hoạch ứng phó 4 bước trong đêm thứ Sáu: Bước 1: Rollback ngay lập tức về GPT-3.5 ổn định; Bước 2: Bật thông báo fallback banner bảo trì nhẹ; Bước 3: Thu thập log lỗi, truy vết spike chi phí và độ trễ; Bước 4: Tái hiện sự cố trong môi trường staging để cô lập nguyên nhân.",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 3",
         "source": "Đề 1 - Câu 52 (Ảnh: Screenshot 2026-07-07 115200.png)",
         "question": "Đề xuất thiết kế pipeline CI/CD chuẩn cho AI kèm Eval Gate tự động để chặn đứng sự cố tái diễn trong tương lai?",
-        "answer": "Chạy benchmark 200 câu Golden Dataset trong CI/CD, chỉ cho phép deploy nếu điểm Faithfulness ≥ 0.9 và tỷ lệ lỗi = 0%.",
+        "answer": "Pipeline CI/CD 5 bước kèm Eval Gate: Lưu mã nguồn → Kiểm thử tự động → Đánh giá chất lượng Eval Gate (chạy 200 câu Golden Dataset, Faithfulness ≥ 0.90, tỷ lệ lỗi = 0%) → Thử nghiệm Canary 10% → Triển khai toàn bộ (kết hợp Model Routing dùng GPT-4o-mini cho 80% câu dễ để tối ưu chi phí).",
         "points": "1.0 điểm"
       }
     ]
@@ -1860,21 +1860,21 @@
         "num": "Câu con 1",
         "source": "Đề 1 - Câu 53 (Ảnh: Screenshot 2026-07-07 115205.png)",
         "question": "Xây dựng bộ dữ liệu kiểm định chuẩn (Golden Dataset) trước khi đưa Agent CSKH bảo hành xe máy điện vào Production?",
-        "answer": "Tối thiểu 200 test cases thực tế, bao gồm 70% trường hợp chuẩn, 20% trường hợp biên (Edge Cases) và 10% câu hỏi đối kháng (Adversarial Injection).",
+        "answer": "Bộ dữ liệu kiểm định chuẩn (Golden Dataset): Tối thiểu 150 - 200 câu hỏi thực tế đại diện đầy đủ: 70% trường hợp chuẩn, 20% trường hợp biên (Edge Cases), 10% câu hỏi đối kháng (Prompt Injection), có đáp án chuẩn thẩm định bởi chuyên gia CSKH.",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 2",
         "source": "Đề 1 - Câu 54 (Ảnh: Screenshot 2026-07-07 115210.png)",
         "question": "Áp dụng 4 chỉ số đo lường chất lượng RAGAS và thiết lập ngưỡng an toàn tối thiểu để phê duyệt phát hành?",
-        "answer": "Faithfulness (≥ 0.85), Answer Relevance (≥ 0.85), Context Precision (≥ 0.80), Context Recall (≥ 0.80).",
+        "answer": "4 chỉ số RAGAS & Ngưỡng release tối thiểu: 1. Faithfulness (≥ 0.85 hoặc ≥ 0.95): Đo tính trung thực với tài liệu bảo hành, chống ảo giác; 2. Answer Relevance (≥ 0.85 hoặc ≥ 0.90): Đo mức độ trả lời đúng trọng tâm câu hỏi khách hàng; 3. Context Precision (≥ 0.80): Đo độ chính xác ngữ cảnh, tỷ lệ và thứ hạng chunks liên quan được xếp ở vị trí đầu; 4. Context Recall (≥ 0.80): Đo độ bao phủ ngữ cảnh, mức độ tài liệu truy xuất chứa đầy đủ thông tin để trả lời.",
         "points": "1.0 điểm"
       },
       {
         "num": "Câu con 3",
         "source": "Đề 1 - Câu 55 (Ảnh: Screenshot 2026-07-07 115215.png)",
         "question": "Thiết lập các chốt chặn an toàn (Guardrails) kiểm duyệt đầu vào và đầu ra trước khi cấp quyền truy cập công khai?",
-        "answer": "Chặn Prompt Injection tầng đầu vào; che giấu dữ liệu PII và kiểm soát tính xác thực của chính sách bảo hành ở tầng đầu ra.",
+        "answer": "Chốt chặn an toàn (Guardrails) & Xử lý lỗi Retrieval: Đầu vào: Chặn Prompt Injection và Jailbreak; Đầu ra: Che giấu thông tin PII và kiểm soát tính xác thực chính sách bảo hành; Nếu Faithfulness cao (0.95) mà Context Recall thấp (0.60): AI trung thực nhưng trả lời thiếu ý do tìm kiếm sót tài liệu -> Khắc phục ở Tầng Retrieval (tăng top-k, áp dụng Hybrid Search kết hợp BM25 + Vector, và thêm bước Cohere Reranking).",
         "points": "1.0 điểm"
       }
     ]
