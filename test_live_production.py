@@ -34,7 +34,9 @@ def test_live():
         "origin_sub_questions",
         "NGUỒN GỐC TỪ ĐỀ THI GỐC",
         "toggleSubQuestions",
-        "Gộp từ",
+        "renderSubAnswer",
+        "Gạch đầu dòng dễ nhớ",
+        "Đáp án chuẩn đồng bộ (>70% điểm ăn chắc):",
         "Dành cho Sếp học thuộc chia theo điểm"
     ]
     for kw in keywords:
@@ -65,13 +67,24 @@ def test_live():
     assert len(questions_with_sub) == 16, f"Expected 16, got {len(questions_with_sub)}"
     assert total_sub_q == 38, f"Expected 38, got {total_sub_q}"
 
-    # 4. Assert Question 53 on live payload
-    q53 = next((q for q in questions if q["id"] == 53), None)
-    assert q53 is not None, "Câu 53 không tồn tại trên Live!"
-    assert len(q53["origin_sub_questions"]) == 3, f"Câu 53 phải có 3 câu con, có {len(q53['origin_sub_questions'])}"
-    print(f"✓ Câu 53 trên Live đã có {len(q53['origin_sub_questions'])} câu con:")
-    for sq in q53["origin_sub_questions"]:
-        print(f"   • {sq['num']}: {sq['question'][:50]}... -> Đáp án: {sq['answer']}")
+    # 4. Assert all 38 sub-questions have bullets and bold keywords
+    print("\n--- Kiểm định 38 câu con trên Live Production ---")
+    verified_subs = 0
+    for q in questions_with_sub:
+        for sq in q["origin_sub_questions"]:
+            ans = sq["answer"]
+            assert ans.startswith("•"), f"Câu {q['id']} sub {sq['num']} không có bullet: {ans[:30]}"
+            assert "**" in ans, f"Câu {q['id']} sub {sq['num']} thiếu keyword: {ans[:30]}"
+            verified_subs += 1
+    assert verified_subs == 38
+    print(f"✓ 100% ({verified_subs}/38) câu con trên Live đều có gạch đầu dòng (•) và in đậm keyword (**)")
+
+    # 5. Assert Question 68 specifically
+    q68 = next(q for q in questions if q["id"] == 68)
+    ans68_3 = q68["origin_sub_questions"][2]["answer"]
+    print(f"\n✓ Câu 68 sub 3 trên Live:\n{ans68_3}")
+    assert "Hybrid Search: BM25 + Vector" in ans68_3
+    assert "Cohere Reranking" in ans68_3
 
     print("\n🎉 LIVE PRODUCTION ASSERTION: PASS 100% HOÀN HẢO!")
 
