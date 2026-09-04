@@ -1,15 +1,18 @@
-# 🔄 PIPELINE DIAGRAM: LUỒNG ĐỒNG BỘ & TRIỂN KHAI
+# 🔄 PIPELINE DIAGRAM: CHUẨN HÓA GẠCH ĐẦU DÒNG 38 ĐÁP ÁN CÂU CON & UI BULLET RENDER
 
 ```mermaid
-graph TD
-    A["questions_db.json<br/>(68 câu, 16 câu tự luận có 38 origin_sub_questions)"] -->|sync_questions_to_html.py| B["index.html<br/>(Cập nhật const questions = [...])"]
-    B --> C{"Kiểm Thử Xác Nhận<br/>(38 câu hỏi con, câu 53, JS parse)"}
-    C -->|PASS 100%| D["Sao Chép Đồng Bộ Đè 2 File"]
-    D --> D1["học tập/on_tap_ai_ml.html"]
-    D --> D2["Desktop/on_tap_ai_ml.html"]
-    C -->|FAIL| ERR["Dừng lại & Phân tích Root Cause"]
-    D1 & D2 & B --> E["Git Add & Commit & Push origin master"]
-    E --> F["Vercel Production Deploy<br/>--prod --yes --scope tuananhs-projects-8aea56ce"]
-    F --> G["Live Curl Assertion Test<br/>https://on-tap-ai-ml.vercel.app"]
-    G --> H["Nghiệm thu & Báo cáo Handoff"]
+flowchart TD
+    A["Yêu cầu từ Sếp:<br/>1. Gạch đầu dòng 38 câu con<br/>2. Dễ nhớ, >70% điểm, vừa phải<br/>3. Tiếng Việt dễ hiểu, thuật ngữ Anh chuẩn<br/>4. Render UI thoáng mắt"] --> B["Phase 1 & 2: Discovery & Exploration<br/>Khảo sát 38 câu con & UI hiện tại"]
+    
+    B --> C["Phase 3: Questions & Edge Cases<br/>Ca biên: Điền từ ngắn, format markdown, XSS sanitization"]
+    
+    C --> D["Phase 4: Architecture Design<br/>Implementation Plan (M1 - M7)"]
+    
+    D --> E["Phase 5: Implementation<br/>• M1: Chuẩn hóa 38 câu con vào questions_db.json<br/>• M2: Viết hàm renderSubAnswer trong index.html<br/>• M3: Đồng bộ questions vào index.html<br/>• M4: Sync 2 file Desktop"]
+    
+    E --> F["Phase 6: Quality Review & QA<br/>• Kiểm thử 38/38 sub-questions có bullet + keyword<br/>• Thử nghiệm render XSS & Markdown<br/>• SHA256 Checksum 3 file HTML"]
+    
+    F --> G["Deployment & Live Verification<br/>• Git push origin master<br/>• Deploy Vercel Production<br/>• E2E Live Payload Verification"]
+    
+    G --> H["Phase 7: Summary & Handoff<br/>Lập handoff.md & Báo cáo Agent Chính"]
 ```

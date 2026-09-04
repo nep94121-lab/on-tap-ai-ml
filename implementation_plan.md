@@ -1,38 +1,47 @@
-# 📋 IMPLEMENTATION PLAN: NÂNG CẤP GIAO DIỆN CÂU CON TƯƠNG TÁC & ĐỒNG BỘ ĐÁP ÁN VỚI QUICK_TIP
+# 📋 IMPLEMENTATION PLAN: CHUẨN HÓA GẠCH ĐẦU DÒNG 38 ĐÁP ÁN CÂU CON (>70% ĐIỂM) & NÂNG CẤP UI RENDER BULLET
 
-## 1. Mục tiêu
-- **Đồng bộ nội dung:** Rà soát toàn bộ 38 câu hỏi con trong 16 câu tự luận (53 - 68) trong `questions_db.json`. Nội dung trường `answer` của từng câu con phải đồng bộ 100% với nội dung chuẩn, súc tích, dễ nhớ trong `quick_tip`. Đặc biệt tại Câu 68: Câu con 2 phải ghi rõ cả định nghĩa súc tích của 4 chỉ số RAGAS (Faithfulness, Answer Relevance, Context Precision, Context Recall) và ngưỡng release.
-- **Nâng cấp giao diện tương tác (Interactive Sub-questions UI):**
-  + Thu gọn sẵn phần đáp án `👉 Đáp án câu này:` ở mỗi câu con, có nút bấm `[👁️ Xem đáp án ▼]` <-> `[Thu gọn đáp án ▲]`.
-  + Bổ sung khu vực Textarea ghi câu trả lời riêng cho từng câu con, tự động lưu vào `localStorage` key `sub_ans_{qid}_{idx}`, có hiển thị số ký tự và nút xóa nháp.
-  + Thêm nút tiện ích "Mở tất cả đáp án" / "Thu gọn tất cả đáp án" ở đầu khối Nguồn gốc.
+## 1. Mục tiêu Sprint
+- **Chuẩn hóa nội dung 38 câu con (Q53 - Q68):**
+  + 100% đáp án câu con phải có gạch đầu dòng (`•`), mỗi ý rõ ràng trên từng dòng.
+  + Súc tích, vừa phải, đúng trọng tâm "Bí kíp >70% điểm ăn chắc", làm nổi bật từ khóa chính (in đậm `**keyword**` quan trọng).
+  + Quy tắc ngôn ngữ theo chỉ đạo của Sếp: Ưu tiên tiếng Việt giải thích dễ học thuộc; CHỈ giữ tiếng Anh đối với thuật ngữ chuyên môn bắt buộc và luôn kèm giải nghĩa tiếng Việt súc tích bên cạnh.
+  + Cập nhật trực tiếp vào `questions_db.json`.
+- **Nâng cấp giao diện hiển thị trong `index.html`:**
+  + Tạo hàm chuyên dụng `renderSubAnswer(rawAnswer)` an toàn XSS.
+  + Chuyển đổi các dòng bullet `•` thành danh sách các ý có thụt lề, bullet badge màu nổi bật, khoảng cách dòng `space-y-2` thoáng mắt.
+  + Hỗ trợ định dạng `**in đậm**` và `` `code/thuật ngữ` `` giúp mắt người đọc quét nhanh từ khóa chính.
+  + Đảm bảo giao diện responsive hoàn hảo trên cả điện thoại di động và máy tính để bàn.
 - **Đồng bộ toàn hệ thống & Deploy:**
-  + Cập nhật `index.html` và sao chép 100% sang 2 file đích Desktop.
-  + Git commit & push lên repo GitHub.
-  + Deploy Vercel Production và kiểm thử Live payload.
+  + Đồng bộ dữ liệu `questions_db.json` vào `index.html`.
+  + Đồng bộ 100% sang 2 file Desktop:
+    * `C:\Users\Admin\Desktop\học tập\on_tap_ai_ml.html`
+    * `C:\Users\Admin\Desktop\on_tap_ai_ml.html`
+  + Git commit & push lên repo GitHub `https://github.com/nep94121-lab/on-tap-ai-ml`.
+  + Deploy Vercel Production (`vercel --prod --yes --scope tuananhs-projects-8aea56ce`).
+  + Chạy kiểm thử tự động Live E2E payload và nghiệm thu.
 
-## 2. Kế hoạch Milestones chi tiết
-- **M1: Rà soát & Cập nhật `questions_db.json`**
-  - Viết script Python chuẩn hóa `origin_sub_questions[].answer` cho cả 38 câu con ăn khớp với `quick_tip`.
-  - Cập nhật Câu 68 câu con 2 đầy đủ 4 định nghĩa RAGAS + ngưỡng.
-- **M2: Nâng cấp Template UI và JS trong `index.html`**
-  - Cập nhật khối render `origin_sub_questions` (ẩn đáp án, nút toggle từng câu con, textarea luyện gõ câu trả lời, badge lưu localStorage, nút xóa nháp).
-  - Thêm nút "Mở tất cả đáp án" / "Thu gọn tất cả đáp án" tại header câu con.
-  - Viết các hàm JS: `toggleSubAnswer(qid, idx)`, `toggleAllSubAnswers(qid, showAll)`, `saveSubAnswer(qid, idx, val)`, `clearSubAnswer(qid, idx)`.
+## 2. Kế hoạch Milestones (M1 - M7)
+- **M1: Thiết kế & Chuẩn hóa toàn bộ 38 đáp án câu con (Data Layer)**
+  - Soạn thảo và chuẩn hóa đáp án cho từng câu con từ Q53 đến Q68 theo tiêu chí:
+    * Có gạch đầu dòng `•`.
+    * In đậm `**từ khóa**`.
+    * Dưới 4 bullet mỗi câu, súc tích, ăn chắc >70% điểm.
+    * Giải thích tiếng Việt + thuật ngữ tiếng Anh chuẩn.
+  - Cập nhật vào `questions_db.json`.
+- **M2: Nâng cấp Logic Render UI trong `index.html` (Presentation Layer)**
+  - Viết hàm `renderSubAnswer(text)` trong `index.html`.
+  - Thay thế render `${sq.answer}` bằng `${renderSubAnswer(sq.answer)}`.
+  - Thiết kế CSS / Tailwind styling cho từng bullet item cực kỳ đẹp mắt, thoáng mắt.
 - **M3: Đồng bộ dữ liệu vào `index.html`**
-  - Chạy đồng bộ `const questions = [...]` từ `questions_db.json` sang `index.html`.
-- **M4: Sao chép đè sang 2 file đích Desktop**
-  - `C:\Users\Admin\Desktop\học tập\on_tap_ai_ml.html`
-  - `C:\Users\Admin\Desktop\on_tap_ai_ml.html`
-- **M5: Kiểm thử tự động (Quality Assurance & Challenger QA)**
-  - Viết và chạy test suite kiểm tra:
-    + 68 câu, 16 câu tự luận, 38 câu con.
-    + Câu 68 sub 2 có 4 chỉ số RAGAS + định nghĩa + ngưỡng.
-    + Các hàm JS và thành phần UI trong cả 3 file HTML.
-    + SHA256 checksum 3 file đồng nhất 100%.
+  - Chạy script `sync_questions_to_html.py` để cập nhật `const questions = [...]`.
+- **M4: Đồng bộ sang 2 file Desktop**
+  - Sao chép đè sang 2 file đích trên Desktop và kiểm tra SHA256.
+- **M5: Kiểm thử tự động (QA Challenger & Tech Lead 10-Tier Pre-Flight)**
+  - Kiểm tra 38 câu con: 100% có bullet, 100% có bold keyword, không rỗng.
+  - Kiểm tra hàm `renderSubAnswer`: escape XSS, parse bold, code, bullet.
+  - Kiểm tra SHA256 3 file HTML trùng khớp 100%.
 - **M6: Git Commit & Push Remote**
-  - `git commit` với thông điệp chuẩn hóa.
-  - `git push origin master`.
-- **M7: Deploy Vercel Production & Live Verification**
-  - `vercel --prod --yes --scope tuananhs-projects-8aea56ce`.
-  - Curl live production URL kiểm tra payload và giao diện.
+  - Git commit & push `origin master`.
+- **M7: Deploy Vercel Production & Live E2E Verification**
+  - Deploy Vercel Production và kiểm tra live URL.
+  - Lập `handoff.md` và báo cáo hoàn tất cho Agent Chính.
