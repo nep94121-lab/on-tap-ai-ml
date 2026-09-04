@@ -681,6 +681,55 @@
         `;
       }
 
+            // Khối Nguồn Gốc Gộp Từ Đề Gốc (Bóc tách chi tiết từng câu hỏi con có nút thu gọn/mở rộng)
+      let subQuestionsHtml = '';
+      if (q.origin_sub_questions && q.origin_sub_questions.length > 0) {
+        subQuestionsHtml = `
+          <div class="mt-3.5 rounded-xl border border-sky-300 bg-sky-50/70 shadow-xs overflow-hidden text-slate-800">
+            <div 
+              onclick="toggleSubQuestions(${q.id})" 
+              class="px-3.5 py-2.5 flex items-center justify-between gap-2 bg-sky-100/80 hover:bg-sky-100 transition cursor-pointer select-none border-b border-sky-200"
+              title="Nhấn để xem chính xác các câu hỏi con gốc trong đề thi"
+            >
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-base">📌</span>
+                <span class="font-extrabold text-xs text-sky-950">NGUỒN GỐC TỪ ĐỀ THI GỐC:</span>
+                <span class="text-xs text-sky-900 font-semibold">Gộp từ <strong>${q.origin_sub_questions.length} câu hỏi nhỏ</strong></span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-200 text-sky-950 ml-1">Chi tiết điểm từng câu</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs font-bold text-sky-900 bg-sky-200/90 hover:bg-sky-300 px-2.5 py-1 rounded-lg transition shadow-xs shrink-0">
+                <span id="sub-q-btn-text-${q.id}">Xem câu hỏi con</span>
+                <span id="sub-q-icon-${q.id}">▼</span>
+              </div>
+            </div>
+            <div id="sub-q-content-${q.id}" class="hidden p-4 space-y-3 bg-white/80 text-xs sm:text-[13px] leading-relaxed border-t border-sky-100">
+              <div class="text-[11px] text-sky-800 italic bg-sky-50 p-2 rounded-lg border border-sky-200">
+                💡 <strong>Dành cho Sếp học thuộc chia theo điểm:</strong> Dưới đây là chính xác từng câu hỏi nhỏ riêng biệt trong ảnh chụp đề thi gốc. Khi đi thi nếu đề bài chia nhỏ ra từng câu thì Sếp viết chuẩn xác theo từng câu dưới này là ăn trọn điểm!
+              </div>
+              <div class="space-y-2.5">
+                ${q.origin_sub_questions.map(sq => `
+                  <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/90 space-y-1.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2 font-bold">
+                      <span class="text-sky-800 text-xs flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                        <span>${sq.num}</span>
+                        <span class="text-[10px] font-normal text-slate-500">(${sq.source})</span>
+                      </span>
+                      <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">${sq.points}</span>
+                    </div>
+                    <div class="text-slate-800 font-medium">${sq.question}</div>
+                    <div class="pt-1.5 border-t border-slate-200/80 flex items-start gap-1.5 text-xs">
+                      <span class="font-bold text-emerald-800 shrink-0">👉 Đáp án câu này:</span>
+                      <span class="font-mono text-emerald-950 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">${sq.answer}</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
       // Hộp thoại giải thích chi tiết (100% điểm)
       let explanationHtml = '';
       if (isRevealed && currentMode !== 'speed_70') {
@@ -770,6 +819,7 @@
             <h3 class="text-sm sm:text-base font-semibold text-slate-900 leading-snug whitespace-pre-line">${q.question}</h3>
           </div>
 
+          ${subQuestionsHtml}
           ${choicesHtml}
           ${quickTipHtml}
           ${audioPlayerHtml}
@@ -1115,6 +1165,26 @@
         if (drawCont) drawCont.classList.add('hidden');
         btn.dataset.collapsed = 'true';
         btn.innerText = 'Mở nháp ▼';
+      }
+    }
+
+    
+    // Thu ra / thụt vào khối bóc tách câu hỏi con gốc
+    function toggleSubQuestions(qid) {
+      const content = document.getElementById(`sub-q-content-${qid}`);
+      const btnText = document.getElementById(`sub-q-btn-text-${qid}`);
+      const icon = document.getElementById(`sub-q-icon-${qid}`);
+      if (!content) return;
+
+      const isHidden = content.classList.contains('hidden');
+      if (isHidden) {
+        content.classList.remove('hidden');
+        if (btnText) btnText.innerText = 'Thu gọn';
+        if (icon) icon.innerText = '▲';
+      } else {
+        content.classList.add('hidden');
+        if (btnText) btnText.innerText = 'Xem câu hỏi con';
+        if (icon) icon.innerText = '▼';
       }
     }
 
