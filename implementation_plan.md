@@ -1,47 +1,58 @@
-# 📋 IMPLEMENTATION PLAN: CHUẨN HÓA GẠCH ĐẦU DÒNG 38 ĐÁP ÁN CÂU CON (>70% ĐIỂM) & NÂNG CẤP UI RENDER BULLET
+# 📋 KẾ HOẠCH TRIỂN KHAI: TỐI ƯU GIAO DIỆN DI ĐỘNG TOÀN DIỆN (MOBILE-FIRST POLISH & BUGFIX)
 
-## 1. Mục tiêu Sprint
-- **Chuẩn hóa nội dung 38 câu con (Q53 - Q68):**
-  + 100% đáp án câu con phải có gạch đầu dòng (`•`), mỗi ý rõ ràng trên từng dòng.
-  + Súc tích, vừa phải, đúng trọng tâm "Bí kíp >70% điểm ăn chắc", làm nổi bật từ khóa chính (in đậm `**keyword**` quan trọng).
-  + Quy tắc ngôn ngữ theo chỉ đạo của Sếp: Ưu tiên tiếng Việt giải thích dễ học thuộc; CHỈ giữ tiếng Anh đối với thuật ngữ chuyên môn bắt buộc và luôn kèm giải nghĩa tiếng Việt súc tích bên cạnh.
-  + Cập nhật trực tiếp vào `questions_db.json`.
-- **Nâng cấp giao diện hiển thị trong `index.html`:**
-  + Tạo hàm chuyên dụng `renderSubAnswer(rawAnswer)` an toàn XSS.
-  + Chuyển đổi các dòng bullet `•` thành danh sách các ý có thụt lề, bullet badge màu nổi bật, khoảng cách dòng `space-y-2` thoáng mắt.
-  + Hỗ trợ định dạng `**in đậm**` và `` `code/thuật ngữ` `` giúp mắt người đọc quét nhanh từ khóa chính.
-  + Đảm bảo giao diện responsive hoàn hảo trên cả điện thoại di động và máy tính để bàn.
-- **Đồng bộ toàn hệ thống & Deploy:**
-  + Đồng bộ dữ liệu `questions_db.json` vào `index.html`.
-  + Đồng bộ 100% sang 2 file Desktop:
-    * `C:\Users\Admin\Desktop\học tập\on_tap_ai_ml.html`
-    * `C:\Users\Admin\Desktop\on_tap_ai_ml.html`
-  + Git commit & push lên repo GitHub `https://github.com/nep94121-lab/on-tap-ai-ml`.
-  + Deploy Vercel Production (`vercel --prod --yes --scope tuananhs-projects-8aea56ce`).
-  + Chạy kiểm thử tự động Live E2E payload và nghiệm thu.
+## 🎯 Mục Tiêu Dự Án
+Đảm bảo ứng dụng Ôn Tập AI/ML (68 câu) hoạt động hoàn hảo trên mọi kích thước màn hình điện thoại (360px, 375px, 390px, 412px, 430px) và máy tính bảng:
+1. 0 lỗi tràn ngang (No horizontal scroll).
+2. Chống triệt để iOS Safari auto-zoom khi chạm vào ô nhập liệu / nháp.
+3. Hàng nút bấm câu con, thanh công cụ bóc tách điểm co giãn tự nhiên, padding card chuẩn `p-3.5 sm:p-5`.
+4. Thanh bộ lọc 7 nút cuộn ngang mượt mà phong cách native app, cảm ứng >= 36px.
+5. Bảng vẽ tay ngón tay Canvas responsive 100% width, không trượt trang khi vẽ.
+6. Nút "Về đầu trang" 38-40px gọn gàng, tinh tế, bán trong suốt ở góc phải dưới.
+7. Đồng bộ 100% sang 2 file Desktop, Git Push và Deploy Vercel Production thành công.
 
-## 2. Kế hoạch Milestones (M1 - M7)
-- **M1: Thiết kế & Chuẩn hóa toàn bộ 38 đáp án câu con (Data Layer)**
-  - Soạn thảo và chuẩn hóa đáp án cho từng câu con từ Q53 đến Q68 theo tiêu chí:
-    * Có gạch đầu dòng `•`.
-    * In đậm `**từ khóa**`.
-    * Dưới 4 bullet mỗi câu, súc tích, ăn chắc >70% điểm.
-    * Giải thích tiếng Việt + thuật ngữ tiếng Anh chuẩn.
-  - Cập nhật vào `questions_db.json`.
-- **M2: Nâng cấp Logic Render UI trong `index.html` (Presentation Layer)**
-  - Viết hàm `renderSubAnswer(text)` trong `index.html`.
-  - Thay thế render `${sq.answer}` bằng `${renderSubAnswer(sq.answer)}`.
-  - Thiết kế CSS / Tailwind styling cho từng bullet item cực kỳ đẹp mắt, thoáng mắt.
-- **M3: Đồng bộ dữ liệu vào `index.html`**
-  - Chạy script `sync_questions_to_html.py` để cập nhật `const questions = [...]`.
-- **M4: Đồng bộ sang 2 file Desktop**
-  - Sao chép đè sang 2 file đích trên Desktop và kiểm tra SHA256.
-- **M5: Kiểm thử tự động (QA Challenger & Tech Lead 10-Tier Pre-Flight)**
-  - Kiểm tra 38 câu con: 100% có bullet, 100% có bold keyword, không rỗng.
-  - Kiểm tra hàm `renderSubAnswer`: escape XSS, parse bold, code, bullet.
-  - Kiểm tra SHA256 3 file HTML trùng khớp 100%.
-- **M6: Git Commit & Push Remote**
-  - Git commit & push `origin master`.
-- **M7: Deploy Vercel Production & Live E2E Verification**
-  - Deploy Vercel Production và kiểm tra live URL.
-  - Lập `handoff.md` và báo cáo hoàn tất cho Agent Chính.
+---
+
+## 📅 Danh Mục Milestones Thực Thi
+
+### Milestone 1 (M1): CSS Reset & Chống Tràn Màn Hình Ngang
+- Thêm quy tắc CSS toàn cục: `html, body { overflow-x: hidden; max-width: 100vw; }`.
+- Thêm `*, *::before, *::after { box-sizing: border-box; }`.
+- Cấu hình thẻ code, pre, table có `overflow-x: auto; word-break: break-word; max-width: 100%`.
+- Chuẩn hóa viewport meta tag: `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">`.
+- Bổ sung tiện ích CSS ẩn thanh cuộn `.scrollbar-none`.
+
+### Milestone 2 (M2): Chống Tự Động Phóng To iOS Safari (Auto-Zoom Fix)
+- Thêm media query CSS: `@media screen and (max-width: 768px) { input[type="text"], input[type="search"], textarea, select { font-size: 16px !important; } }`.
+- Cập nhật ô tìm kiếm `#searchInput` với class `text-[16px] sm:text-xs`.
+- Cập nhật `#essay-draft-${q.id}` với class `text-[16px] sm:text-sm`.
+- Cập nhật `#sub-input-${q.id}-${sIdx}` với class `text-[16px] sm:text-xs`.
+
+### Milestone 3 (M3): Tối Ưu Thẻ Câu Hỏi & Hàng Nút Bấm Câu Con
+- Căn chỉnh padding `<main>`: `px-3 sm:px-4 py-4 sm:py-8`.
+- Tinh chỉnh padding thẻ câu hỏi `<article>`: `p-3.5 sm:p-5` (thay thế `p-6`).
+- Hàng nút điều khiển câu con: `flex flex-wrap items-center justify-between gap-1.5`.
+- Thanh công cụ đầu khối nguồn gốc: `flex flex-wrap items-center justify-between gap-2`.
+- Tối ưu khoảng cách và kích thước nút trắc nghiệm đơn / nhiều đáp án.
+
+### Milestone 4 (M4): Tối Ưu Thanh Điều Hướng & Bộ Lọc 7 Nút
+- Tinh gọn thanh Sticky Header mini trên mobile: tiêu đề co giãn, tóm tắt điểm số gọn, nút toggle bảng hiển thị biểu tượng súc tích.
+- Thanh bộ lọc 7 nút: cuộn ngang mượt mà trên mobile (`overflow-x-auto whitespace-nowrap scrollbar-none pb-1.5 sm:pb-0 md:flex-wrap md:whitespace-normal flex items-center gap-1.5`).
+- Kích thước chạm nút lọc tối thiểu 36px (`min-h-[36px]`).
+
+### Milestone 5 (M5): Bảng Vẽ Tay Canvas Ngón Tay Chống Trượt
+- Bổ sung CSS `canvas { touch-action: none; max-width: 100%; }`.
+- Tính toán kích thước canvas responsive theo `canvas.parentElement.clientWidth` không bị tràn mép.
+- Ngăn chặn triệt để hiện tượng cuộn trang khi vẽ: `touch-action: none` và `preventDefault` trên pointer/touch events.
+
+### Milestone 6 (M6): Nút Nổi Thông Minh "Về Đầu Trang"
+- Định vị `fixed bottom-4 right-4 z-40`.
+- Thiết kế bán trong suốt với hiệu ứng kính mờ `bg-blue-600/85 hover:bg-blue-600 active:bg-blue-700 backdrop-blur-sm shadow-lg border border-blue-400/40`.
+- Kích thước gọn gàng 38px-40px, icon mũi tên thanh lịch, không che khuất nội dung.
+
+### Milestone 7 (M7): Đồng Bộ 3 File, Git Push & Deploy Vercel Production
+- Ghi đè vào `index.html`.
+- Đồng bộ sang `C:\Users\Admin\Desktop\học tập\on_tap_ai_ml.html` và `C:\Users\Admin\Desktop\on_tap_ai_ml.html`.
+- Xác nhận SHA256 đồng nhất 100% trên cả 3 file.
+- Commit và Push lên GitHub `origin/master`.
+- Deploy Vercel Production với `--prod --yes --scope tuananhs-projects-8aea56ce`.
+- Chạy script kiểm thử tự động Live Production trên các viewport di động.
