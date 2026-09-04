@@ -2,7 +2,12 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Ôn Tập AI/ML">
+  <meta name="theme-color" content="#2563eb">
   <title>Ứng Dụng Ôn Tập AI/ML Chuẩn Hóa (68 Câu Độc Nhất)</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -148,10 +153,11 @@
     </div>
   </main>
 
-  <!-- Nút Lên Đầu Trang -->
-  <div class="fixed bottom-6 right-6 flex flex-col gap-2 z-40">
-    <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" class="p-3 bg-white border border-slate-200 text-slate-600 rounded-full shadow-lg hover:bg-slate-50 transition" title="Lên đầu trang">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+  <!-- Nút Lên Đầu Trang Nổi Thông Minh Cho Mobile & PC (Tự động ẩn/hiện, bo tròn có chữ Về đầu) -->
+  <div id="backToTopContainer" class="fixed bottom-6 right-5 z-40 transition-all duration-300 opacity-0 pointer-events-none translate-y-3">
+    <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" class="px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-full shadow-xl border border-blue-400 transition-all flex items-center gap-1.5 text-xs font-bold shadow-blue-500/30 active:scale-95 cursor-pointer" title="Cuộn về đầu trang">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+      <span>Về đầu</span>
     </button>
   </div>
 
@@ -192,6 +198,12 @@
       document.querySelectorAll('textarea[id^="essay-draft-"]').forEach(ta => {
         const id = ta.id.replace('essay-draft-', '');
         draftNotes[id] = ta.value;
+      });
+      document.querySelectorAll('canvas[id^="essay-canvas-"]').forEach(c => {
+        const id = c.id.replace('essay-canvas-', '');
+        try {
+          localStorage.setItem('essay_drawing_' + id, c.toDataURL('image/png'));
+        } catch(e) {}
       });
       try {
         localStorage.setItem('ai_exam_draft_notes', JSON.stringify(draftNotes));
@@ -543,26 +555,63 @@
           ` : ''}
         `;
       } else {
-        // TỰ LUẬN & BÀI TOÁN TÌNH HUỐNG LỚN (Textarea luôn hiển thị, không bao giờ mất text)
+        // TỰ LUẬN & BÀI TOÁN TÌNH HUỐNG LỚN (Hỗ trợ 2 chế độ: Gõ phím & Vẽ tay cảm ứng Mobile)
         const currentDraft = escapeHtml(draftNotes[q.id] || '');
+        const hasDrawing = !!localStorage.getItem(`essay_drawing_${q.id}`);
         choicesHtml = `
-          <div class="mt-4 p-4 bg-slate-50/90 border border-slate-200 rounded-xl space-y-2.5">
+          <div class="mt-4 p-4 bg-slate-50/90 border border-slate-200 rounded-xl space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <span class="text-xs text-slate-700 font-bold flex items-center gap-1.5">
-                <span>📝</span>
-                <span>Khu vực nháp câu trả lời (Tự động lưu, không mất khi xem đáp án):</span>
-              </span>
-              <button id="essay-btn-${q.id}" onclick="toggleEssayAnswer(${q.id})" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg transition shadow-sm flex items-center gap-1.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-700 font-bold flex items-center gap-1.5">
+                  <span>✍️</span>
+                  <span>Nháp câu trả lời:</span>
+                </span>
+                <div class="inline-flex rounded-lg border border-slate-200 bg-slate-200/70 p-0.5 text-xs">
+                  <button type="button" id="tab-draft-text-${q.id}" onclick="switchDraftMode(${q.id}, 'text')" class="px-2.5 py-1 rounded-md font-bold text-blue-700 bg-white shadow-xs transition cursor-pointer">📝 Gõ chữ</button>
+                  <button type="button" id="tab-draft-draw-${q.id}" onclick="switchDraftMode(${q.id}, 'draw')" class="px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1 cursor-pointer">
+                    <span>🎨 Vẽ tay</span>
+                    ${hasDrawing ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>' : ''}
+                  </button>
+                </div>
+              </div>
+              <button id="essay-btn-${q.id}" onclick="toggleEssayAnswer(${q.id})" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer">
                 ${isRevealed ? '🙈 Ẩn lời giải' : '👁️ Xem lời giải & Barem'}
               </button>
             </div>
-            <textarea 
-              id="essay-draft-${q.id}" 
-              oninput="saveDraft(${q.id}, this.value)" 
-              placeholder="Gõ nháp câu trả lời của bạn tại đây... Khi bấm 'Xem lời giải' hay bấm 'Thu gọn/Mở gợi ý', toàn bộ nội dung bạn gõ ở đây đều được giữ nguyên vẹn 100%." 
-              rows="3" 
-              class="w-full p-3 text-xs sm:text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition leading-relaxed shadow-inner"
-            >${currentDraft}</textarea>
+
+            <!-- Khung 1: Gõ text nháp -->
+            <div id="draft-text-container-${q.id}">
+              <textarea 
+                id="essay-draft-${q.id}" 
+                oninput="saveDraft(${q.id}, this.value)" 
+                placeholder="Gõ nháp câu trả lời của bạn tại đây... Khi bấm 'Xem lời giải' hay bấm 'Thu gọn/Mở gợi ý', toàn bộ nội dung bạn gõ ở đây đều được giữ nguyên vẹn 100%." 
+                rows="3" 
+                class="w-full p-3 text-xs sm:text-sm bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition leading-relaxed shadow-inner"
+              >${currentDraft}</textarea>
+            </div>
+
+            <!-- Khung 2: Bảng vẽ tay / Sơ đồ ngón tay trên điện thoại -->
+            <div id="draft-draw-container-${q.id}" class="hidden space-y-2">
+              <div class="flex items-center justify-between bg-slate-100 p-2 rounded-xl border border-slate-200 text-xs flex-wrap gap-2">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-slate-500 font-semibold text-[11px]">Bút:</span>
+                  <button type="button" onclick="setDrawColor(${q.id}, '#1e293b')" class="w-5 h-5 rounded-full bg-slate-800 border-2 border-white shadow-xs cursor-pointer" title="Màu đen"></button>
+                  <button type="button" onclick="setDrawColor(${q.id}, '#2563eb')" class="w-5 h-5 rounded-full bg-blue-600 border-2 border-white shadow-xs cursor-pointer" title="Màu xanh"></button>
+                  <button type="button" onclick="setDrawColor(${q.id}, '#dc2626')" class="w-5 h-5 rounded-full bg-red-600 border-2 border-white shadow-xs cursor-pointer" title="Màu đỏ"></button>
+                  <button type="button" onclick="setDrawTool(${q.id}, 'pen')" id="tool-pen-${q.id}" class="px-2 py-1 bg-white border border-blue-500 rounded font-bold text-blue-700 shadow-xs cursor-pointer">✏️ Bút vẽ</button>
+                  <button type="button" onclick="setDrawTool(${q.id}, 'eraser')" id="tool-eraser-${q.id}" class="px-2 py-1 bg-slate-100 border border-slate-300 rounded font-medium text-slate-600 cursor-pointer">🧹 Tẩy</button>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="clearCanvas(${q.id})" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded font-semibold text-xs cursor-pointer">🗑️ Xóa hết</button>
+                </div>
+              </div>
+              <div class="relative w-full rounded-xl border border-slate-300 bg-white overflow-hidden shadow-inner touch-none">
+                <canvas id="essay-canvas-${q.id}" class="w-full block bg-white" height="240" style="touch-action: none; cursor: crosshair;"></canvas>
+              </div>
+              <p class="text-[11px] text-slate-500 italic flex items-center gap-1">
+                <span>📱</span> Dùng ngón tay vẽ sơ đồ/nháp trên điện thoại. Hình vẽ tự động lưu vào máy vĩnh viễn!
+              </p>
+            </div>
           </div>
         `;
       }
@@ -648,11 +697,17 @@
                 <div class="text-[11px] text-indigo-700">Nghe giảng chậm, phát âm chuẩn và đánh vần từng chữ cái</div>
               </div>
             </div>
-            <audio controls preload="none" class="h-8 w-full sm:w-64 rounded-lg">
-              <source src="./Audio_Hoc_Thuoc_16_Cau_AI_ML/${audioMap[q.id]}" type="audio/mpeg">
-              <source src="../Audio_Hoc_Thuoc_16_Cau_AI_ML/${audioMap[q.id]}" type="audio/mpeg">
-              Trình duyệt không hỗ trợ thẻ audio.
-            </audio>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <audio controls preload="none" class="h-8 flex-1 sm:w-56 rounded-lg">
+                <source src="./Audio_Hoc_Thuoc_16_Cau_AI_ML/${audioMap[q.id]}" type="audio/mpeg">
+                <source src="../Audio_Hoc_Thuoc_16_Cau_AI_ML/${audioMap[q.id]}" type="audio/mpeg">
+                Trình duyệt không hỗ trợ thẻ audio.
+              </audio>
+              <a href="./Audio_Hoc_Thuoc_16_Cau_AI_ML/${audioMap[q.id]}" download="${audioMap[q.id]}" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer" title="Tải file MP3 về điện thoại để nghe offline">
+                <span>📥</span>
+                <span class="text-[11px]">Tải MP3</span>
+              </a>
+            </div>
           </div>
         `;
       }
@@ -743,12 +798,16 @@
       renderQuestions();
     }
 
-    // Đóng/Mở xem lời giải Tự luận - Cập nhật trực tiếp trên DOM, 100% không mất chữ đang gõ
+    // Đóng/Mở xem lời giải Tự luận - Cập nhật trực tiếp trên DOM, 100% không mất chữ đang gõ và hình vẽ
     function toggleEssayAnswer(questionId) {
-      // 1. Lưu text đang gõ trong textarea
+      // 1. Lưu text đang gõ trong textarea và hình vẽ canvas
       const ta = document.getElementById(`essay-draft-${questionId}`);
       if (ta) {
         saveDraft(questionId, ta.value);
+      }
+      const cv = document.getElementById(`essay-canvas-${questionId}`);
+      if (cv) {
+        try { localStorage.setItem('essay_drawing_' + questionId, cv.toDataURL('image/png')); } catch(e) {}
       }
 
       const state = userAnswers[questionId] || { selected: [], checked: false, isCorrect: true };
@@ -796,6 +855,178 @@
     }
 
     // Khởi chạy khi tài liệu tải xong
+    
+    // ==========================================
+    // LOGIC BẢNG VẼ TAY CANVAS CHO ĐIỆN THOẠI & PC
+    // ==========================================
+    const drawingStates = {};
+
+    function switchDraftMode(qid, mode) {
+      const textCont = document.getElementById(`draft-text-container-${qid}`);
+      const drawCont = document.getElementById(`draft-draw-container-${qid}`);
+      const btnText = document.getElementById(`tab-draft-text-${qid}`);
+      const btnDraw = document.getElementById(`tab-draft-draw-${qid}`);
+
+      if (!textCont || !drawCont) return;
+
+      if (mode === 'text') {
+        textCont.classList.remove('hidden');
+        drawCont.classList.add('hidden');
+        btnText.className = 'px-2.5 py-1 rounded-md font-bold text-blue-700 bg-white shadow-xs transition cursor-pointer';
+        btnDraw.className = 'px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition flex items-center gap-1 cursor-pointer';
+      } else {
+        textCont.classList.add('hidden');
+        drawCont.classList.remove('hidden');
+        btnDraw.className = 'px-2.5 py-1 rounded-md font-bold text-blue-700 bg-white shadow-xs transition flex items-center gap-1 cursor-pointer';
+        btnText.className = 'px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer';
+        // Khởi tạo Canvas nếu chưa xong
+        setTimeout(() => initCanvasIfNeeded(qid), 50);
+      }
+    }
+
+    function initCanvasIfNeeded(qid) {
+      const canvas = document.getElementById(`essay-canvas-${qid}`);
+      if (!canvas) return;
+
+      if (!canvas.dataset.initialized) {
+        canvas.dataset.initialized = 'true';
+        const ctx = canvas.getContext('2d');
+
+        // Định dạng kích thước thật theo container
+        const rect = canvas.getBoundingClientRect();
+        const parentWidth = canvas.parentElement.clientWidth || 340;
+        canvas.width = Math.max(parentWidth, 300);
+        canvas.height = 240;
+
+        // Đổ nền trắng
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Khôi phục hình vẽ đã lưu nếu có
+        const savedData = localStorage.getItem(`essay_drawing_${qid}`);
+        if (savedData) {
+          const img = new Image();
+          img.onload = () => ctx.drawImage(img, 0, 0);
+          img.src = savedData;
+        }
+
+        const state = {
+          isDrawing: false,
+          tool: 'pen',
+          color: '#1e293b'
+        };
+        drawingStates[qid] = state;
+
+        function getCanvasCoords(e) {
+          const r = canvas.getBoundingClientRect();
+          let clientX, clientY;
+          if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+          } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+          }
+          return {
+            x: (clientX - r.left) * (canvas.width / r.width),
+            y: (clientY - r.top) * (canvas.height / r.height)
+          };
+        }
+
+        function startDrawing(e) {
+          e.preventDefault();
+          state.isDrawing = true;
+          const pos = getCanvasCoords(e);
+          ctx.beginPath();
+          ctx.moveTo(pos.x, pos.y);
+        }
+
+        function draw(e) {
+          if (!state.isDrawing) return;
+          e.preventDefault();
+          const pos = getCanvasCoords(e);
+
+          if (state.tool === 'eraser') {
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 18;
+          } else {
+            ctx.strokeStyle = state.color;
+            ctx.lineWidth = 3.5;
+          }
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.lineTo(pos.x, pos.y);
+          ctx.stroke();
+        }
+
+        function stopDrawing(e) {
+          if (!state.isDrawing) return;
+          state.isDrawing = false;
+          ctx.closePath();
+          try {
+            localStorage.setItem(`essay_drawing_${qid}`, canvas.toDataURL('image/png'));
+          } catch(err) {}
+        }
+
+        // Pointer Events (chuẩn cho cả cảm ứng điện thoại và chuột)
+        canvas.addEventListener('pointerdown', startDrawing, { passive: false });
+        canvas.addEventListener('pointermove', draw, { passive: false });
+        canvas.addEventListener('pointerup', stopDrawing);
+        canvas.addEventListener('pointercancel', stopDrawing);
+        canvas.addEventListener('pointerleave', stopDrawing);
+
+        // Touch events fallback cho thiết bị cũ
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing);
+      }
+    }
+
+    function setDrawColor(qid, color) {
+      if (!drawingStates[qid]) drawingStates[qid] = {};
+      drawingStates[qid].color = color;
+      setDrawTool(qid, 'pen');
+    }
+
+    function setDrawTool(qid, tool) {
+      if (!drawingStates[qid]) drawingStates[qid] = {};
+      drawingStates[qid].tool = tool;
+
+      const penBtn = document.getElementById(`tool-pen-${qid}`);
+      const eraserBtn = document.getElementById(`tool-eraser-${qid}`);
+      if (penBtn && eraserBtn) {
+        if (tool === 'pen') {
+          penBtn.className = 'px-2 py-1 bg-white border border-blue-500 rounded font-bold text-blue-700 shadow-xs cursor-pointer';
+          eraserBtn.className = 'px-2 py-1 bg-slate-100 border border-slate-300 rounded font-medium text-slate-600 cursor-pointer';
+        } else {
+          eraserBtn.className = 'px-2 py-1 bg-white border border-amber-500 rounded font-bold text-amber-700 shadow-xs cursor-pointer';
+          penBtn.className = 'px-2 py-1 bg-slate-100 border border-slate-300 rounded font-medium text-slate-600 cursor-pointer';
+        }
+      }
+    }
+
+    function clearCanvas(qid) {
+      const canvas = document.getElementById(`essay-canvas-${qid}`);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      localStorage.removeItem(`essay_drawing_${qid}`);
+    }
+
+    // Scroll Listener: Ẩn nút Về đầu trang khi ở trên đỉnh, hiện mượt mà khi cuộn xuống
+    window.addEventListener('scroll', function() {
+      const btn = document.getElementById('backToTopContainer');
+      if (!btn) return;
+      if (window.scrollY > 220) {
+        btn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+        btn.classList.add('opacity-100', 'translate-y-0');
+      } else {
+        btn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+        btn.classList.remove('opacity-100', 'translate-y-0');
+      }
+    });
+
     window.onload = init;
   </script>
 
@@ -1173,6 +1404,12 @@
           <p class="text-[11px] text-indigo-800 leading-relaxed mt-1">
             💡 Sếp có thể cắm tai nghe bật file này nghe như podcast khi đi đường, trước khi ngủ hoặc khi nghỉ ngơi để ngấm kiến thức tự nhiên!
           </p>
+          <div class="pt-2">
+            <a href="./Audio_Hoc_Thuoc_16_Cau_AI_ML/Tong_Hop_Toan_Bo_16_Cau_Tu_Luan.mp3" download="Tong_Hop_Toan_Bo_16_Cau_Tu_Luan.mp3" class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-md transition cursor-pointer">
+              <span>📥</span>
+              <span>Tải Toàn Bộ 16 Câu MP3 Về Điện Thoại (Nghe Offline)</span>
+            </a>
+          </div>
         </div>
 
         <div class="text-xs text-slate-600 space-y-1.5">
