@@ -1,72 +1,75 @@
-# 📦 BIÊN BẢN NGHIỆM THU & BÀN GIAO DỰ ÁN (HANDOFF REPORT)
+# 📦 BIÊN BẢN NGHIỆM THU & BÀN GIAO (HANDOFF REPORT)
 
-**Dự án:** Đồng bộ dữ liệu Nguồn Gốc Đề Thi Gốc (`origin_sub_questions`) & Triển khai Vercel Production  
-**Đơn vị thực hiện:** PM Sub-agent (Tier 2 Orchestrator)  
-**Thời gian hoàn thành:** 2026-09-04 22:58:30 (GMT+7)  
-**Tình trạng:** ✅ HOÀN THÀNH TOÀN BỘ 100% — PASS 7 PHASE GATES  
-
----
-
-### 1. Tóm Tắt Nhiệm Vụ & Nguyên Nhân Gốc Rễ (Executive Summary & Root Cause)
-- **Vấn đề phản ánh từ Sếp:** Mở web app không thấy khối bóc tách câu hỏi con ("sao tôi thấy ko có gì khác vậy").
-- **Nguyên nhân gốc rễ (Root Cause):** Trong file `index.html`, mảng JavaScript inline `const questions = [...]` chứa dữ liệu phiên bản cũ (chưa có trường `origin_sub_questions`), dẫn tới `q.origin_sub_questions` bị `undefined` tại runtime, khối HTML `📌 NGUỒN GỐC TỪ ĐỀ THI GỐC` không được kích hoạt render.
-- **Giải pháp triệt để:** 
-  1. Trích xuất dữ liệu 68 câu chuẩn từ `questions_db.json` (trong đó 16 câu tự luận 53-68 đã tích hợp đầy đủ 38 câu hỏi con).
-  2. Thay thế chính xác mảng `const questions = [...]` trong `index.html`, bảo toàn 100% các tính năng nâng cao (Audio bài giảng, chế độ Siêu Tốc 70s, Smart Back-To-Top, bộ lọc 7 nút, toggle câu hỏi con).
-  3. Đồng bộ đè sang 2 bản sao HTML phục vụ học tập offline.
-  4. Git commit & push lên GitHub repository.
-  5. Deploy bản Production lên Vercel.
-  6. Kiểm thử Live E2E trực tiếp trên payload web app.
+**Dự án:** Rà Soát Đối Chiếu 16 Câu Tự Luận (53–68) & Bổ Sung Đầy Đủ Ý Câu 68 RAGAS  
+**Ngày hoàn thành:** 2026-09-04  
+**Phụ trách:** PM Sub-agent (Project Orchestrator - Tier 2)  
+**Môi trường:** Production (`https://on-tap-ai-ml.vercel.app`)  
 
 ---
 
-### 2. Minh Chứng Kiểm Thử Độc Lập (Verification Evidence & QA Results)
+## 1. Tóm Tắt Điều Hành (Executive Summary)
+Tiếp nhận yêu cầu từ Sếp qua Agent Chính:
+- Soi thấy ở **Câu 68**: Đề bài hỏi về 4 chỉ số RAGAS nhưng quick_tip và explanation mới chỉ nêu 2 chỉ số (`Faithfulness`, `Answer Relevance`), THIẾU 2 chỉ số (`Context Precision`, `Context Recall`) cùng ngưỡng an toàn Release.
+- Rà soát toàn bộ **16 câu tự luận (từ Câu 53 đến 68)** xem có câu nào hỏi N ý mà phần gợi ý hoặc giải thích bị thiếu ý hay không.
+- Thực hiện cập nhật, đồng bộ vào hệ thống local và deploy lên Production Vercel.
 
-#### A. Kiểm thử trên file cục bộ (`index.html`)
-- Chạy bộ kiểm thử tự động `verify_html_subquestions.py`:
-  - Tổng số câu hỏi: **68 câu** (Đạt chuẩn 100%).
-  - Số câu tự luận có `origin_sub_questions`: **16/16 câu** (IDs 53 - 68).
-  - Tổng số câu hỏi con được bóc tách: **38 câu hỏi con**.
-  - Kiểm tra câu 53: Có đủ 3 câu con kèm điểm số (1.0 điểm/câu), câu hỏi chi tiết, đáp án mẫu và nguồn ảnh đề thi gốc.
-  - Kiểm tra các trường dữ liệu bắt buộc: `num`, `question`, `points`, `answer`, `source` -> **100% hợp lệ, không có trường nào rỗng**.
-  - Kiểm tra logic giao diện: Function `toggleSubQuestions(id)` và khối `📌 NGUỒN GỐC TỪ ĐỀ THI GỐC` -> **Tồn tại và sẵn sàng hoạt động**.
-
-#### B. Đồng bộ file đĩa cứng & Kiểm tra Checksum SHA256
-| File Đường Dẫn | Kích Thước (Bytes) | SHA256 Checksum | Tình Trạng |
-|---|:---:|:---:|:---:|
-| `Bo_De_AI_ML_Da_Giai\index.html` | 188,906 | `d30b19381dcc6196733a9a027d94ada06449b5d975c6af4e438c312df885d01a` | Gốc chuẩn |
-| `học tập\on_tap_ai_ml.html` | 188,906 | `d30b19381dcc6196733a9a027d94ada06449b5d975c6af4e438c312df885d01a` | Khớp 100% |
-| `Desktop\on_tap_ai_ml.html` | 188,906 | `d30b19381dcc6196733a9a027d94ada06449b5d975c6af4e438c312df885d01a` | Khớp 100% |
-
-#### C. Kiểm thử Live Production (`https://on-tap-ai-ml.vercel.app`)
-- Chạy test suite `test_live_production.py` và kiểm tra `curl.exe`:
-  - HTTP Status: **200 OK**.
-  - Payload HTML: **171,737 bytes**.
-  - Phân tích cú pháp inline JSON trực tiếp từ response live:
-    - 68 câu hỏi nạp thành công.
-    - 16 câu tự luận có `origin_sub_questions`.
-    - 38 câu hỏi con xuất hiện đầy đủ trên production.
-  - Khối giao diện `📌 NGUỒN GỐC TỪ ĐỀ THI GỐC` và nút `Xem câu hỏi con ▼` đã được render hoàn chỉnh.
+**Kết quả thực hiện:**
+- Đã hoàn thành 100% qua 7 Phase Gates tuần tự.
+- Sửa triệt để Câu 68: Bổ sung đủ 4 chỉ số RAGAS, ngưỡng Release cho cả 4 chỉ số, phân tích tầng Retrieval.
+- Qua rà soát kỹ lưỡng 15 câu còn lại, phát hiện và bổ sung thêm 3 câu bị thiếu ý so với câu hỏi con trong đề thi gốc:
+  + **Câu 59**: Bổ sung Cơ chế Vòng lặp phản hồi (Feedback Loop) & Human-in-the-loop khi Worker gặp lỗi / confidence < 80%.
+  + **Câu 60**: Bổ sung 3 thành phần cốt lõi của Output Contract (Format/Schema, Constraints, Fallback/Error Handling).
+  + **Câu 67**: Bổ sung Kế hoạch ứng phó sự cố khẩn cấp (Incident Response) 4 bước trong đêm thứ Sáu.
+  + **Câu 56**: Chuẩn hóa chuỗi đáp án ghép nối trong câu hỏi con số 2.
+- Đồng bộ dữ liệu sang `index.html` và 2 file đích trên máy người dùng.
+- Kiểm thử tự động 9/9 assertions PASS.
+- Git commit & push (`91cf937`) lên GitHub repo `https://github.com/nep94121-lab/on-tap-ai-ml`.
+- Deploy Vercel Production thành công và kiểm thử live payload đạt chuẩn 100%.
 
 ---
 
-### 3. Thông Tin Triển Khai Git & Vercel
-- **Git Repository:** `https://github.com/nep94121-lab/on-tap-ai-ml.git`
-- **Branch:** `master`
-- **Commit SHA:**
-  - `124295a`: `fix(data): sync origin_sub_questions from questions_db.json to index.html`
-  - `ca43052`: `test(live): add live production assertion test suite`
-- **Git Tree:** Sạch hoàn toàn (`working tree clean`).
-- **Vercel Production URL:** [https://on-tap-ai-ml.vercel.app](https://on-tap-ai-ml.vercel.app)
-- **Vercel Deployment ID:** `dpl_3zuR8c3UhzZAL1pcRCM9HEkmFv1w`
-- **Trạng thái triển khai:** `READY` (Aliased to production).
+## 2. Bảng Tổng Kết Rà Soát Đối Chiếu Toàn Bộ 16 Câu Tự Luận (53–68)
+
+| Câu ID | Chủ Đề Nghiệp Vụ | Số Ý Đề Bài Yêu Cầu | Trạng Thái Ban Đầu | Chi Tiết Bổ Sung / Chuẩn Hóa Đã Thực Hiện | Trạng Thái Sau Sửa |
+|:---:|---|:---:|:---:|---|:---:|
+| **53** | ReAct Pattern Loop | 3 bước (`[1]`, `[2]`, `[3]`) | **Đầy đủ** | Đủ 3 từ tiếng Anh và nghĩa: Thought → Action → Observation. Không cần sửa. | ✅ HOÀN THIỆN |
+| **54** | API LLM Parameters | 3 tham số API (`[1]`, `[2]`, `[3]`) | **Đầy đủ** | Đủ 3 tham số: `temperature`, `max_tokens`, `top_p`. Không cần sửa. | ✅ HOÀN THIỆN |
+| **55** | Semantic Search Pipeline | 3 thuật ngữ (`[1]`, `[2]`, `[3]`) | **Đầy đủ** | Đủ 3 thuật ngữ: `Embedding`, `Cosine similarity`, `Retrieval` (hoặc top-k). Không cần sửa. | ✅ HOÀN THIỆN |
+| **56** | Ghép nối 5 khái niệm AI | 5 cặp A1..A5 nối B1..B5 | **Đầy đủ** (Lệch nhẹ format sub 2) | Khớp chuẩn A1-B5, A2-B4, A3-B3, A4-B1, A5-B2. Đã chuẩn hóa chuỗi đáp án câu con 2. | ✅ HOÀN THIỆN |
+| **57** | RAG Indexing Pipeline | Sắp xếp 5 bước (A, B, C, D, E) | **Đầy đủ** | Đủ 5 bước theo thứ tự: B → E → A → C → D (Nạp → Lọc → Cắt → Đổi → Lưu). | ✅ HOÀN THIỆN |
+| **58** | AI Product Lifecycle | Sắp xếp 5 giai đoạn (A..E) | **Đầy đủ** | Đủ 5 giai đoạn: C → B → D → E → A (Định vị → Dựng mẫu → Đánh giá → Triển khai → Giám sát). | ✅ HOÀN THIỆN |
+| **59** | Kiến trúc Multi-Agent | 2 ý: Supervisor + 3 Workers & Feedback loop | **BỊ THIẾU Ý 2** | Ban đầu chỉ có 4 agents (Supervisor + 3 Workers); **Đã bổ sung:** Cơ chế Vòng lặp phản hồi (Feedback Loop) và chuyển tiếp Human-in-the-loop khi Worker lỗi / confidence < 80%. | ✅ ĐÃ BỔ SUNG ĐỦ |
+| **60** | Output Contract Prompting | 2 ý: Định nghĩa + 3 thành phần & Lý do | **BỊ THIẾU 3 THÀNH PHẦN** | Ban đầu chỉ nêu định nghĩa chung; **Đã bổ sung rõ:** 3 thành phần cốt lõi (1. Format/Schema, 2. Constraints, 3. Fallback/Error Handling). | ✅ ĐÃ BỔ SUNG ĐỦ |
+| **61** | Chunking & Metadata | 2 ý: Chunking đúng & 4 trường Metadata | **Đầy đủ** | Đủ phương pháp Semantic Chunking và 4 trường Metadata (title, category, version, source_url). | ✅ HOÀN THIỆN |
+| **62** | P99 Latency vs Mean Latency | Giải thích 2-3 câu | **Đầy đủ** | Đầy đủ bản chất P99 vs Mean, che giấu tail latency, ý nghĩa SLA trong Multi-Agent. | ✅ HOÀN THIỆN |
+| **63** | ReAct Trace Thực Thi | 4 bước chuỗi thực thi | **Đầy đủ** | Đủ 4 bước: Question → Thought → Action → Observation → Final Answer. | ✅ HOÀN THIỆN |
+| **64** | Production System Prompt | 4 phần bắt buộc | **Đầy đủ** | Đủ 4 phần: Role & Persona, Constraints, Output Contract, Data Safeguard (PII). | ✅ HOÀN THIỆN |
+| **65** | Debug ReAct Code Python | 2 lỗi thiết kế & Viết lại code | **Đầy đủ** | Đủ phân tích 2 lỗi (mất context observation, lặp vô hạn) và code Python sửa hoàn chỉnh. | ✅ HOÀN THIỆN |
+| **66** | Business Case & ROI Logistics | 3 ý: Chi phí ẩn, Tiết kiệm, ROI | **Đầy đủ** | Đủ 2 chi phí ẩn, tiết kiệm 76,8tr/tháng, ROI 142,5%, thời gian hoàn vốn 5 tháng. | ✅ HOÀN THIỆN |
+| **67** | Sự cố Deploy chiều thứ Sáu | 3 ý: 3 sai lầm, Chi phí 6x, CI/CD | **BỊ THIẾU INCIDENT RESPONSE** | Đề bài con hỏi kế hoạch Incident Response 4 bước; **Đã bổ sung:** Đủ 4 bước ứng cứu trong đêm thứ Sáu (Rollback, Fallback banner, Thu thập logs, Staging repro) song hành với Model Routing. | ✅ ĐÃ BỔ SUNG ĐỦ |
+| **68** | Kiểm Định CSKH & RAGAS | 3 ý: Golden dataset, 4 chỉ số RAGAS, Release & Retrieval | **BỊ THIẾU 2 CHỈ SỐ RAGAS & NGƯỠNG** | **Trọng tâm sửa:** Bổ sung đủ 4 chỉ số RAGAS (`Faithfulness`, `Answer Relevance`, `Context Precision`, `Context Recall`), định nghĩa chi tiết trong CSKH bảo hành, ngưỡng Release cho cả 4 chỉ số, và phân tích khắc phục tầng Retrieval. | ✅ ĐÃ BỔ SUNG ĐỦ |
 
 ---
 
-### 4. Hướng Dẫn Sếp Trải Nghiệm Tính Năng Mới
-1. **Truy cập ứng dụng:** Mở link [https://on-tap-ai-ml.vercel.app](https://on-tap-ai-ml.vercel.app) (hoặc mở trực tiếp file `C:\Users\Admin\Desktop\on_tap_ai_ml.html` trên trình duyệt Chrome/Edge).
-2. **Chọn bộ lọc:** Bấm vào nút lọc **"Tự luận (16)"** trên thanh điều hướng.
-3. **Quan sát giao diện mới:**
-   - Tại mỗi câu tự luận (từ Câu 53 đến Câu 68), ngay bên dưới đề bài sẽ có một khung viền xanh nổi bật:
-     > **📌 NGUỒN GỐC TỪ ĐỀ THI GỐC: Gộp từ X câu hỏi nhỏ [Chi tiết điểm từng câu] [Xem câu hỏi con ▼]**
-   - Bấm vào nút **"Xem câu hỏi con ▼"**: Khối nội dung sẽ mở rộng mượt mà, hiển thị chính xác từng câu hỏi nhỏ trong đề thi gốc, số điểm cụ thể (ví dụ: `1.0 điểm`), nội dung câu hỏi và đáp án chuẩn ngắn gọn cho từng phần để Sếp học thuộc ăn trọn điểm thi!
+## 3. Các Tệp Tin Đã Đồng Bộ
+1. **Source Database:** `C:\Users\Admin\Desktop\học tập\Bo_De_AI_ML_Da_Giai\questions_db.json`
+2. **Local Workspace Web:** `C:\Users\Admin\Desktop\học tập\Bo_De_AI_ML_Da_Giai\index.html`
+3. **Bản sao Desktop học tập:** `C:\Users\Admin\Desktop\học tập\on_tap_ai_ml.html` (MD5: `615767f44ad3718c6d7ee664928bcf25`)
+4. **Bản sao Desktop ngoài:** `C:\Users\Admin\Desktop\on_tap_ai_ml.html` (MD5: `615767f44ad3718c6d7ee664928bcf25`)
+
+---
+
+## 4. Bằng Chứng Kiểm Thử & Triển Khai
+- **Test Suite Local (`test_essay_completeness.py`):**
+  + 9/9 checks PASS (Kiểm tra độ dài DB 68 câu, 16 câu tự luận có 38 sub-questions, nội dung Q68 đủ 4 chỉ số & ngưỡng, Q59, Q60, Q67, Q56, và hash MD5 của cả 3 file HTML đồng nhất).
+- **Git Commit & Remote:**
+  + Commit: `91cf937`
+  + Remote: `https://github.com/nep94121-lab/on-tap-ai-ml.git` (branch `master`)
+- **Vercel Production Deployment:**
+  + Deployment URL: `https://on-tap-ai-6qgjlbxnn-tuananhs-projects-8aea56ce.vercel.app`
+  + Production Alias: `https://on-tap-ai-ml.vercel.app`
+  + Deployment ID: `dpl_94Y1cYSCykeZJRY26WKRsmwTsrA6`
+  + Target: `production`
+- **Live Production Payload Test:**
+  + HTTP 200 OK
+  + Xác nhận `Context Precision`, `Context Recall`, `Faithfulness`, `Answer Relevance` đã xuất hiện trực tiếp trên bản dựng online.
